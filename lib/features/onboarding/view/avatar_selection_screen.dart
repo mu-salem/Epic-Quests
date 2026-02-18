@@ -16,9 +16,6 @@ import 'widgets/avatar_item.dart';
 import 'widgets/avatar_tabs.dart';
 import 'widgets/dots_indicator.dart';
 
-/// Avatar Selection Screen - Game Character Selection Style
-/// 
-/// User selects ONE hero from available boys or girls using tabs
 class AvatarSelectionScreen extends StatefulWidget {
   const AvatarSelectionScreen({super.key});
 
@@ -27,9 +24,8 @@ class AvatarSelectionScreen extends StatefulWidget {
 }
 
 class _AvatarSelectionScreenState extends State<AvatarSelectionScreen> {
-  // Repository for hero profiles
   final HeroProfileRepository _repository = LocalHeroProfileRepository();
-  
+
   // Avatar lists
   final _boys = const [
     AvatarItem(name: 'Arin', asset: AppImages.avatarArin),
@@ -46,8 +42,8 @@ class _AvatarSelectionScreenState extends State<AvatarSelectionScreen> {
   ];
 
   // State
-  bool _isBoysTab = true; // Active tab
-  int _selectedIndex = 0; // Current selected index in active tab
+  bool _isBoysTab = true;
+  int _selectedIndex = 0;
   late PageController _pageController;
 
   // Computed properties
@@ -86,25 +82,21 @@ class _AvatarSelectionScreenState extends State<AvatarSelectionScreen> {
   Future<void> _onConfirm() async {
     final heroName = _selectedAvatar.name;
     final heroGender = _isBoysTab ? 'boy' : 'girl';
-    
-    // Check if hero already exists
+
     final existingHero = await _repository.loadHeroProfile(heroName);
-    
+
     if (existingHero != null) {
-      // Hero exists - use existing profile (preserves level, XP, quests)
       await _repository.setLastSelectedHero(heroName);
     } else {
-      // Hero doesn't exist - create new profile
       final newHero = HeroProfile(
         name: heroName,
         avatarAsset: _selectedAvatar.asset,
         gender: heroGender,
         level: 1,
         currentXP: 0,
-        quests: [], // Start with no quests
+        quests: [],
       );
-      
-      // Save new hero profile
+
       await _repository.saveHeroProfile(newHero);
       await _repository.setLastSelectedHero(heroName);
     }
@@ -126,10 +118,7 @@ class _AvatarSelectionScreenState extends State<AvatarSelectionScreen> {
         children: [
           // Background image
           Positioned.fill(
-            child: Image.asset(
-              AppImages.avatarCoverPage,
-              fit: BoxFit.cover,
-            ),
+            child: Image.asset(AppImages.avatarCoverPage, fit: BoxFit.cover),
           ),
 
           // Blur overlay
@@ -137,7 +126,7 @@ class _AvatarSelectionScreenState extends State<AvatarSelectionScreen> {
             child: BackdropFilter(
               filter: ImageFilter.blur(sigmaX: 8, sigmaY: 8),
               child: Container(
-                color: AppColors.backgroundDark.withOpacity(0.5),
+                color: AppColors.backgroundDark.withValues(alpha: 0.5),
               ),
             ),
           ),
@@ -154,10 +143,7 @@ class _AvatarSelectionScreenState extends State<AvatarSelectionScreen> {
 
                   SizedBox(height: 24.h),
 
-                  AvatarTabs(
-                    isBoys: _isBoysTab,
-                    onTabChanged: _switchTab,
-                  ),
+                  AvatarTabs(isBoys: _isBoysTab, onTabChanged: _switchTab),
 
                   SizedBox(height: 24.h),
 
