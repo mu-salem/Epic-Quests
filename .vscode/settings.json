@@ -1,0 +1,20 @@
+{
+    "favorites.resources": [
+        {
+            "filePath": "lib\\core\\resources",
+            "group": "Default"
+        },
+        {
+            "filePath": "assets\\video",
+            "group": "Default"
+        },
+        {
+            "filePath": "pubspec.yaml",
+            "group": "Default"
+        },
+        {
+            "filePath": "lib\\features\\onboarding",
+            "group": "Default"
+        }
+    ]
+}
