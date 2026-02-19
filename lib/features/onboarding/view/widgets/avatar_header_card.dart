@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../../../core/theme/app_colors.dart';
+import '../../../../core/widgets/spacing_widgets.dart';
 import '../../../../core/theme/app_text_styles.dart';
 
 class AvatarHeaderCard extends StatelessWidget {
@@ -32,7 +33,7 @@ class AvatarHeaderCard extends StatelessWidget {
             style: AppTextStyles.h3,
             textAlign: TextAlign.center,
           ),
-          SizedBox(height: 6.h),
+          HeightSpacer(6),
           Text(
             'Pick one hero to begin your journey',
             style: AppTextStyles.bodyM.copyWith(color: AppColors.textSecondary),

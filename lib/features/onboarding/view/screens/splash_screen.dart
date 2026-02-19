@@ -6,10 +6,9 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:video_player/video_player.dart';
 
-import '../../../core/routing/route_constants.dart';
-import '../../../core/theme/app_text_styles.dart';
-import '../../../core/widgets/primary_button.dart';
-import 'avatar_selection_screen.dart';
+import '../../../../core/routing/app_router.dart';
+import '../../../../core/theme/app_text_styles.dart';
+import '../../../../core/widgets/primary_button.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -18,12 +17,8 @@ class SplashScreen extends StatefulWidget {
   State<SplashScreen> createState() => _SplashScreenState();
 }
 
-class _SplashScreenState extends State<SplashScreen>
-    with SingleTickerProviderStateMixin {
+class _SplashScreenState extends State<SplashScreen> {
   late final VideoPlayerController _videoController;
-
-  late final AnimationController _fadeController;
-  late final Animation<double> _fadeInNextScreen;
 
   bool _isReady = false;
   bool _started = false;
@@ -32,16 +27,6 @@ class _SplashScreenState extends State<SplashScreen>
   @override
   void initState() {
     super.initState();
-
-    _fadeController = AnimationController(
-      vsync: this,
-      duration: const Duration(milliseconds: 750),
-    );
-
-    _fadeInNextScreen = CurvedAnimation(
-      parent: _fadeController,
-      curve: Curves.easeInOut,
-    );
 
     _videoController = VideoPlayerController.asset('assets/video/intro.mp4')
       ..initialize().then((_) {
@@ -58,10 +43,10 @@ class _SplashScreenState extends State<SplashScreen>
     if (!_completed && _videoController.value.isCompleted) {
       _completed = true;
 
-      _fadeController.forward().whenComplete(() {
-        if (!mounted) return;
-        context.go(RouteConstants.onboardingAvatar);
-      });
+      // Navigate to login screen after splash
+      if (mounted) {
+        context.go(AppRouter.login);
+      }
     }
   }
 
@@ -78,7 +63,6 @@ class _SplashScreenState extends State<SplashScreen>
   void dispose() {
     _videoController.removeListener(_onVideoTick);
     _videoController.dispose();
-    _fadeController.dispose();
     super.dispose();
   }
 
@@ -139,24 +123,6 @@ class _SplashScreenState extends State<SplashScreen>
                 ),
               ),
             ],
-
-            IgnorePointer(
-              ignoring: true,
-              child: FadeTransition(
-                opacity: _fadeInNextScreen,
-                child: const AvatarSelectionScreen(),
-              ),
-            ),
-
-            IgnorePointer(
-              ignoring: true,
-              child: FadeTransition(
-                opacity: _fadeInNextScreen,
-                child: Container(
-                  color: AppColors.black.withValues(alpha: 0.15),
-                ),
-              ),
-            ),
           ],
         ],
       ),

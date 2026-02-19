@@ -3,6 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';
 
 import '../../../../core/theme/app_colors.dart';
+import '../../../../core/widgets/spacing_widgets.dart';
 import '../../../../core/theme/app_text_styles.dart';
 import '../../model/quest.dart';
 
@@ -65,7 +66,7 @@ class QuestCard extends StatelessWidget {
                     style: TextStyle(fontSize: 20.sp),
                   ),
 
-                  SizedBox(width: 8.w),
+                  WidthSpacer(8),
 
                   // Quest Title
                   Expanded(
@@ -83,7 +84,7 @@ class QuestCard extends StatelessWidget {
                     ),
                   ),
 
-                  SizedBox(width: 8.w),
+                  WidthSpacer(8),
 
                   // Complete Checkbox
                   Transform.scale(
@@ -104,7 +105,7 @@ class QuestCard extends StatelessWidget {
 
               // Description (if exists)
               if (quest.description != null && quest.description!.isNotEmpty) ...[
-                SizedBox(height: 8.h),
+                HeightSpacer(8),
                 Text(
                   quest.description!,
                   style: AppTextStyles.bodyS.copyWith(
@@ -115,7 +116,7 @@ class QuestCard extends StatelessWidget {
                 ),
               ],
 
-              SizedBox(height: 10.h),
+              HeightSpacer(10),
 
               // Bottom Row: Deadline & Status Badge
               Row(
@@ -129,7 +130,7 @@ class QuestCard extends StatelessWidget {
                           size: 16.sp,
                           color: AppColors.backgroundDark.withValues(alpha: 0.7),
                         ),
-                        SizedBox(width: 4.w),
+                        WidthSpacer(4),
                         Text(
                           'Due: ${_formatDate(quest.deadline!)}',
                           style: AppTextStyles.caption.copyWith(

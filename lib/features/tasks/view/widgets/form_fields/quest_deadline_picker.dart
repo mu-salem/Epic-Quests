@@ -3,6 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../../../../core/theme/app_colors.dart';
 import '../../../../../core/theme/app_text_styles.dart';
+import '../../../../../core/widgets/spacing_widgets.dart';
 
 /// Deadline picker widget for quest form
 class QuestDeadlinePicker extends StatelessWidget {
@@ -26,7 +27,7 @@ class QuestDeadlinePicker extends StatelessWidget {
             color: AppColors.textSecondary,
           ),
         ),
-        SizedBox(height: 8.h),
+        HeightSpacer(8),
         GestureDetector(
           onTap: onTap,
           child: Container(
@@ -43,7 +44,7 @@ class QuestDeadlinePicker extends StatelessWidget {
                   size: 18.sp,
                   color: AppColors.textMuted,
                 ),
-                SizedBox(width: 10.w),
+                WidthSpacer(10),
                 Text(
                   deadline != null
                       ? '${deadline!.day}/${deadline!.month}/${deadline!.year}'

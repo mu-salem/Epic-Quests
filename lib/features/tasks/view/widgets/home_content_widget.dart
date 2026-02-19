@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 
+import '../../../../core/widgets/spacing_widgets.dart';
 import '../../model/quest.dart';
 import '../../viewmodel/tasks_viewmodel.dart';
 import '../widgets/hero_header.dart';
@@ -56,7 +57,7 @@ class HomeContentWidget extends StatelessWidget {
           onChanged: onSearchChanged,
         ),
 
-        SizedBox(height: 12.h),
+        HeightSpacer(12),
 
         // Priority Filter
         Consumer<TasksViewModel>(
@@ -70,7 +71,7 @@ class HomeContentWidget extends StatelessWidget {
           },
         ),
 
-        SizedBox(height: 12.h),
+        HeightSpacer(12),
 
         // Tabs
         Consumer<TasksViewModel>(
@@ -83,7 +84,7 @@ class HomeContentWidget extends StatelessWidget {
           },
         ),
 
-        SizedBox(height: 12.h),
+        HeightSpacer(12),
 
         // Quest List with TabBarView
         Expanded(

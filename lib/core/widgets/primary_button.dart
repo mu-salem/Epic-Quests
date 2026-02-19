@@ -3,13 +3,8 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../theme/app_colors.dart';
 import '../theme/app_text_styles.dart';
+import 'spacing_widgets.dart';
 
-/// Primary button widget with custom styling
-/// 
-/// A highly customizable reusable button with default purple theme,
-/// border, and glow effect that can be used throughout the application.
-/// 
-/// All styling parameters are optional and have sensible defaults.
 class PrimaryButton extends StatelessWidget {
   const PrimaryButton({
     super.key,
@@ -94,7 +89,7 @@ class PrimaryButton extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           icon!,
-          SizedBox(width: 8.w),
+          WidthSpacer(8),
           Text(
             text,
             style: (textStyle ?? AppTextStyles.button).copyWith(

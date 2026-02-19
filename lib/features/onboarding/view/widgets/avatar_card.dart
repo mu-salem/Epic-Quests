@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../../../core/theme/app_colors.dart';
+import '../../../../core/widgets/spacing_widgets.dart';
 import '../../../../core/theme/app_text_styles.dart';
 import '../../model/avatar_item.dart';
 
@@ -72,7 +73,7 @@ class AvatarCard extends StatelessWidget {
               ),
               child: Column(
                 children: [
-                  SizedBox(height: 10.h),
+                  HeightSpacer(10),
 
                   // Avatar image
                   Expanded(
@@ -85,7 +86,7 @@ class AvatarCard extends StatelessWidget {
                     ),
                   ),
 
-                  SizedBox(height: 8.h),
+                  HeightSpacer(8),
 
                   // Name plate inside card
                   Container(

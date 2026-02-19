@@ -3,6 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../../../../core/theme/app_colors.dart';
 import '../../../../../core/theme/app_text_styles.dart';
+import '../../../../../core/widgets/spacing_widgets.dart';
 
 /// Title input field for quest form
 class QuestTitleField extends StatelessWidget {
@@ -26,7 +27,7 @@ class QuestTitleField extends StatelessWidget {
             color: AppColors.textSecondary,
           ),
         ),
-        SizedBox(height: 8.h),
+        HeightSpacer(8),
         TextFormField(
           controller: controller,
           style: AppTextStyles.bodyM.copyWith(

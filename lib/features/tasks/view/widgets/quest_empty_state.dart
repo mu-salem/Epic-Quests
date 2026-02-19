@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../../../core/theme/app_colors.dart';
+import '../../../../core/widgets/spacing_widgets.dart';
 import '../../../../core/theme/app_text_styles.dart';
 
 class QuestEmptyState extends StatelessWidget {
@@ -33,14 +34,14 @@ class QuestEmptyState extends StatelessWidget {
             isActiveTab ? '📜' : '✅',
             style: TextStyle(fontSize: 64.sp),
           ),
-          SizedBox(height: 16.h),
+          HeightSpacer(16),
           Text(
             isActiveTab ? 'No Active Quests' : 'No Completed Quests',
             style: AppTextStyles.h3.copyWith(
               color: AppColors.textSecondary,
             ),
           ),
-          SizedBox(height: 8.h),
+          HeightSpacer(8),
           Text(
             message,
             textAlign: TextAlign.center,

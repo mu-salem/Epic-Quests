@@ -3,6 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../../../../core/theme/app_colors.dart';
 import '../../../../../core/theme/app_text_styles.dart';
+import '../../../../../core/widgets/spacing_widgets.dart';
 import '../../../model/quest.dart';
 
 /// Priority selector widget for quest form
@@ -27,7 +28,7 @@ class QuestPrioritySelector extends StatelessWidget {
             color: AppColors.textSecondary,
           ),
         ),
-        SizedBox(height: 8.h),
+        HeightSpacer(8),
         Row(
           children: QuestPriority.values.map((priority) {
             final isSelected = selectedPriority == priority;
@@ -55,7 +56,7 @@ class QuestPrioritySelector extends StatelessWidget {
                         priority.icon,
                         style: TextStyle(fontSize: 20.sp),
                       ),
-                      SizedBox(height: 4.h),
+                      HeightSpacer(4),
                       Text(
                         priority.label,
                         style: AppTextStyles.caption.copyWith(

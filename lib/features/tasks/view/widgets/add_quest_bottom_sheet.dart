@@ -3,6 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 
 import '../../../../core/theme/app_colors.dart';
+import '../../../../core/widgets/spacing_widgets.dart';
 import '../../../../core/theme/app_text_styles.dart';
 import '../../model/quest.dart';
 import '../../viewmodel/add_quest_viewmodel.dart';
@@ -184,7 +185,7 @@ class _AddQuestBottomSheetState extends State<AddQuestBottomSheet> {
                     ],
                   ),
 
-                  SizedBox(height: 20.h),
+                  HeightSpacer(20),
 
                   // Title Field
                   QuestTitleField(
@@ -192,14 +193,14 @@ class _AddQuestBottomSheetState extends State<AddQuestBottomSheet> {
                     errorText: viewModel.titleError,
                   ),
 
-                  SizedBox(height: 16.h),
+                  HeightSpacer(16),
 
                   // Description Field
                   QuestDescriptionField(
                     controller: _descriptionController,
                   ),
 
-                  SizedBox(height: 16.h),
+                  HeightSpacer(16),
 
                   // Priority Selector
                   QuestPrioritySelector(
@@ -207,7 +208,7 @@ class _AddQuestBottomSheetState extends State<AddQuestBottomSheet> {
                     onPriorityChanged: viewModel.updatePriority,
                   ),
 
-                  SizedBox(height: 16.h),
+                  HeightSpacer(16),
 
                   // Deadline Picker
                   QuestDeadlinePicker(
@@ -215,7 +216,7 @@ class _AddQuestBottomSheetState extends State<AddQuestBottomSheet> {
                     onTap: _selectDeadline,
                   ),
 
-                  SizedBox(height: 24.h),
+                  HeightSpacer(24),
 
                   // Action Buttons
                   QuestFormActions(

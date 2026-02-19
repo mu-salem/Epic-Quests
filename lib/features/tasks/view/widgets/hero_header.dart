@@ -3,6 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../../../core/resources/app_images.dart';
 import '../../../../core/theme/app_colors.dart';
+import '../../../../core/widgets/spacing_widgets.dart';
 import '../../../../core/theme/app_text_styles.dart';
 
 class HeroHeader extends StatelessWidget {
@@ -59,7 +60,7 @@ class HeroHeader extends StatelessWidget {
             ),
           ),
 
-          SizedBox(width: 12.w),
+          WidthSpacer(12),
 
           // Hero Info
           Expanded(
@@ -76,7 +77,7 @@ class HeroHeader extends StatelessWidget {
                   overflow: TextOverflow.ellipsis,
                 ),
 
-                SizedBox(height: 4.h),
+                HeightSpacer(4),
 
                 // Level Badge
                 Container(
@@ -96,7 +97,7 @@ class HeroHeader extends StatelessWidget {
                   ),
                 ),
 
-                SizedBox(height: 8.h),
+                HeightSpacer(8),
 
                 // XP Bar
                 Column(
@@ -110,7 +111,7 @@ class HeroHeader extends StatelessWidget {
                         color: AppColors.textSecondary,
                       ),
                     ),
-                    SizedBox(height: 4.h),
+                    HeightSpacer(4),
                     Container(
                       height: 8.h,
                       decoration: BoxDecoration(
@@ -122,7 +123,7 @@ class HeroHeader extends StatelessWidget {
                         borderRadius: BorderRadius.circular(3.r),
                         child: LinearProgressIndicator(
                           value: xpProgress.clamp(0.0, 1.0),
-                          backgroundColor: Colors.transparent,
+                          backgroundColor: AppColors.transparent,
                           valueColor: AlwaysStoppedAnimation<Color>(
                             AppColors.primaryTint70,
                           ),

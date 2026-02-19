@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
-import '../../../core/theme/app_colors.dart';
-import '../model/quest.dart';
-import '../viewmodel/tasks_viewmodel.dart';
-import 'utils/quest_modal_helper.dart';
-import 'widgets/home_content_widget.dart';
-import 'widgets/new_quest_button.dart';
+import '../../../../core/theme/app_colors.dart';
+import '../../model/quest.dart';
+import '../../viewmodel/tasks_viewmodel.dart';
+import '../utils/quest_modal_helper.dart';
+import '../widgets/home_content_widget.dart';
+import '../widgets/new_quest_button.dart';
 
 
 class TasksHomeScreen extends StatefulWidget {

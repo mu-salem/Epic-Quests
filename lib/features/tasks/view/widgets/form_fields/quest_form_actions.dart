@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
-
 import '../../../../../core/theme/app_colors.dart';
 import '../../../../../core/widgets/primary_button.dart';
+import '../../../../../core/widgets/spacing_widgets.dart';
 
 /// Action buttons for quest form (Delete/Save)
 class QuestFormActions extends StatelessWidget {
@@ -31,7 +30,7 @@ class QuestFormActions extends StatelessWidget {
             borderColor: AppColors.error,
             shadowColor: AppColors.error..withValues(alpha: 0.3),
           ),
-          SizedBox(height: 12.h),
+          HeightSpacer(12),
         ],
 
         // Save Button
@@ -41,7 +40,7 @@ class QuestFormActions extends StatelessWidget {
           onPressed: onSave,
         ),
 
-        SizedBox(height: 12.h),
+        HeightSpacer(12),
       ],
     );
   }

@@ -33,7 +33,7 @@ class AvatarTabs extends StatelessWidget {
                 duration: const Duration(milliseconds: 200),
                 padding: EdgeInsets.symmetric(vertical: 14.h),
                 decoration: BoxDecoration(
-                  color: isBoys ? AppColors.primary : Colors.transparent,
+                  color: isBoys ? AppColors.primary : AppColors.transparent,
                   borderRadius: BorderRadius.circular(10.r),
                   boxShadow: isBoys
                       ? [
@@ -63,7 +63,7 @@ class AvatarTabs extends StatelessWidget {
                 duration: const Duration(milliseconds: 200),
                 padding: EdgeInsets.symmetric(vertical: 14.h),
                 decoration: BoxDecoration(
-                  color: !isBoys ? AppColors.primary : Colors.transparent,
+                  color: !isBoys ? AppColors.primary : AppColors.transparent,
                   borderRadius: BorderRadius.circular(10.r),
                   boxShadow: !isBoys
                       ? [

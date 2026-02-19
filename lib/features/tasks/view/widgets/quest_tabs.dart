@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../../../core/theme/app_colors.dart';
+import '../../../../core/widgets/spacing_widgets.dart';
 import '../../../../core/theme/app_text_styles.dart';
 
 
@@ -36,14 +37,14 @@ class QuestTabs extends StatelessWidget {
           unselectedLabelColor: AppColors.textMuted,
           labelStyle: AppTextStyles.h4.copyWith(fontSize: 14.sp),
           unselectedLabelStyle: AppTextStyles.h4.copyWith(fontSize: 14.sp),
-          dividerColor: Colors.transparent,
+          dividerColor: AppColors.transparent,
           tabs: [
             Tab(
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text('ACTIVE'),
-                  SizedBox(width: 6.w),
+                  WidthSpacer(6),
                   Container(
                     padding: EdgeInsets.symmetric(horizontal: 6.w, vertical: 2.h),
                     decoration: BoxDecoration(
@@ -66,7 +67,7 @@ class QuestTabs extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text('COMPLETED'),
-                  SizedBox(width: 6.w),
+                  WidthSpacer(6),
                   Container(
                     padding: EdgeInsets.symmetric(horizontal: 6.w, vertical: 2.h),
                     decoration: BoxDecoration(

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../../../core/theme/app_colors.dart';
 import '../../model/quest.dart';
 import '../../viewmodel/tasks_viewmodel.dart';
 import '../widgets/add_quest_bottom_sheet.dart';
@@ -14,7 +15,7 @@ class QuestModalHelper {
     final result = await showModalBottomSheet<Quest>(
       context: context,
       isScrollControlled: true,
-      backgroundColor: Colors.transparent,
+      backgroundColor: AppColors.transparent,
       builder: (context) => const AddQuestBottomSheet(),
     );
 
@@ -32,7 +33,7 @@ class QuestModalHelper {
     final result = await showModalBottomSheet<dynamic>(
       context: context,
       isScrollControlled: true,
-      backgroundColor: Colors.transparent,
+      backgroundColor: AppColors.transparent,
       builder: (context) => AddQuestBottomSheet(questToEdit: quest),
     );
 
