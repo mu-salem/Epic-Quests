@@ -4,9 +4,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_text_styles.dart';
 
-/// Quest Empty State Widget
-/// 
-/// Displays an empty state when no quests are available
 class QuestEmptyState extends StatelessWidget {
   const QuestEmptyState({
     super.key,

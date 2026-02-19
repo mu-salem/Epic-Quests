@@ -37,7 +37,7 @@ class QuestCard extends StatelessWidget {
               end: Alignment.bottomRight,
               colors: [
                 AppColors.panelLight,
-                AppColors.panelLight.withOpacity(0.9),
+                AppColors.panelLight.withValues(alpha: 0.9),
               ],
             ),
             borderRadius: BorderRadius.circular(12.r),
@@ -47,7 +47,7 @@ class QuestCard extends StatelessWidget {
             ),
             boxShadow: [
               BoxShadow(
-                color: AppColors.black.withOpacity(0.2),
+                color: AppColors.black.withValues(alpha: 0.2),
                 blurRadius: 6,
                 offset: const Offset(0, 3),
               ),
@@ -108,7 +108,7 @@ class QuestCard extends StatelessWidget {
                 Text(
                   quest.description!,
                   style: AppTextStyles.bodyS.copyWith(
-                    color: AppColors.backgroundDark.withOpacity(0.8),
+                    color: AppColors.backgroundDark.withValues(alpha: 0.8),
                   ),
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
@@ -127,14 +127,14 @@ class QuestCard extends StatelessWidget {
                         Icon(
                           Icons.access_time_rounded,
                           size: 16.sp,
-                          color: AppColors.backgroundDark.withOpacity(0.7),
+                          color: AppColors.backgroundDark.withValues(alpha: 0.7),
                         ),
                         SizedBox(width: 4.w),
                         Text(
                           'Due: ${_formatDate(quest.deadline!)}',
                           style: AppTextStyles.caption.copyWith(
                             fontSize: 14.sp,
-                            color: AppColors.backgroundDark.withOpacity(0.7),
+                            color: AppColors.backgroundDark.withValues(alpha: 0.7),
                           ),
                         ),
                       ],

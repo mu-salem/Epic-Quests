@@ -5,9 +5,7 @@ import '../../model/quest.dart';
 import '../widgets/quest_card.dart';
 import '../widgets/quest_empty_state.dart';
 
-/// Quest List Widget
-/// 
-/// Displays a list of quests with empty state handling
+
 class QuestListView extends StatelessWidget {
   const QuestListView({
     super.key,

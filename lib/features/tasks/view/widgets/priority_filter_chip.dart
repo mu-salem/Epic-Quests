@@ -5,9 +5,6 @@ import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_text_styles.dart';
 import '../../model/quest.dart';
 
-/// Priority Filter Chip
-/// 
-/// Displays a filter chip for quest priority filtering
 class PriorityFilterChip extends StatelessWidget {
   const PriorityFilterChip({
     super.key,
@@ -40,7 +37,7 @@ class PriorityFilterChip extends StatelessWidget {
           boxShadow: isSelected
               ? [
                   BoxShadow(
-                    color: AppColors.primary.withOpacity(0.4),
+                    color: AppColors.primary.withValues(alpha: 0.4),
                     blurRadius: 12,
                     spreadRadius: 2,
                   ),

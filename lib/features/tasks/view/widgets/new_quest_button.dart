@@ -31,8 +31,8 @@ class NewQuestButton extends StatelessWidget {
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
             colors: [
-              AppColors.backgroundDark.withOpacity(0.0),
-              AppColors.backgroundDark.withOpacity(0.9),
+              AppColors.backgroundDark.withValues(alpha: 0.15),
+              AppColors.backgroundDark.withValues(alpha: 0.9),
               AppColors.backgroundDark,
             ],
           ),

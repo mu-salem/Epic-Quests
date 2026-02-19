@@ -10,10 +10,7 @@ import '../widgets/quest_list_view.dart';
 import '../widgets/quest_search_bar.dart';
 import '../widgets/quest_tabs.dart';
 
-/// Home Content Widget
-/// 
-/// Contains the main content of the tasks home screen
-/// (Header, Search, Filters, Tabs, Quest Lists)
+
 class HomeContentWidget extends StatelessWidget {
   const HomeContentWidget({
     super.key,
