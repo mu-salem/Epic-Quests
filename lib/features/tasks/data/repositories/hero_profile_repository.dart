@@ -1,4 +1,4 @@
-import '../model/hero_profile.dart';
+import '../../model/hero_profile.dart';
 
 /// Repository for managing multiple hero profiles
 abstract class HeroProfileRepository {

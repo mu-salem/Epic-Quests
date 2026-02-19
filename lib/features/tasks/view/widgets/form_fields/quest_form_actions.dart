@@ -29,7 +29,7 @@ class QuestFormActions extends StatelessWidget {
             onPressed: onDelete,
             backgroundColor: AppColors.error,
             borderColor: AppColors.error,
-            shadowColor: AppColors.error.withOpacity(0.3),
+            shadowColor: AppColors.error..withValues(alpha: 0.3),
           ),
           SizedBox(height: 12.h),
         ],

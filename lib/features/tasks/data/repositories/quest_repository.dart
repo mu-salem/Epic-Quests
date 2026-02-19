@@ -1,4 +1,4 @@
-import '../model/quest.dart';
+import '../../model/quest.dart';
 
 abstract class QuestRepository {
   /// Get all quests

@@ -1,14 +1,14 @@
 import 'dart:convert';
-import '../../../core/services/local_storage_service.dart';
-import '../model/quest.dart';
-import 'quest_repository.dart';
+import '../../../../core/services/local_storage_service.dart';
+import '../../model/quest.dart';
+import '../repositories/quest_repository.dart';
 
 class LocalQuestRepository implements QuestRepository {
   static const String _questsKey = 'quests';
 
   @override
   Future<List<Quest>> getQuests() async {
-    final jsonString = await LocalStorageService.getString(_questsKey);
+    final jsonString = LocalStorageService.getString(_questsKey);
     if (jsonString == null || jsonString.isEmpty) {
       return [];
     }

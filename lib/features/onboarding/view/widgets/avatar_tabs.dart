@@ -38,7 +38,7 @@ class AvatarTabs extends StatelessWidget {
                   boxShadow: isBoys
                       ? [
                           BoxShadow(
-                            color: AppColors.primary.withOpacity(0.4),
+                            color: AppColors.primary..withValues(alpha: 0.4),
                             blurRadius: 12,
                             spreadRadius: 1,
                           ),
@@ -68,7 +68,7 @@ class AvatarTabs extends StatelessWidget {
                   boxShadow: !isBoys
                       ? [
                           BoxShadow(
-                            color: AppColors.primary.withOpacity(0.4),
+                            color: AppColors.primary..withValues(alpha: 0.4),
                             blurRadius: 12,
                             spreadRadius: 1,
                           ),

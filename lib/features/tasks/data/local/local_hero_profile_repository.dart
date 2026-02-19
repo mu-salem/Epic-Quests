@@ -1,7 +1,7 @@
-import '../../../core/constants/storage_keys.dart';
-import '../../../core/services/local_storage_service.dart';
-import '../model/hero_profile.dart';
-import 'hero_profile_repository.dart';
+import '../../../../core/constants/storage_keys.dart';
+import '../../../../core/services/local_storage_service.dart';
+import '../../model/hero_profile.dart';
+import '../repositories/hero_profile_repository.dart';
 
 
 class LocalHeroProfileRepository implements HeroProfileRepository {

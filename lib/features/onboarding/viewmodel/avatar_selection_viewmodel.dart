@@ -2,8 +2,8 @@ import 'package:flutter/foundation.dart';
 
 import '../../../core/resources/app_images.dart';
 import '../../../core/routing/app_router.dart';
-import '../../tasks/data/hero_profile_repository.dart';
-import '../../tasks/data/local_hero_profile_repository.dart';
+import '../../tasks/data/repositories/hero_profile_repository.dart';
+import '../../tasks/data/local/local_hero_profile_repository.dart';
 import '../../tasks/model/hero_profile.dart';
 import '../model/avatar_item.dart';
 

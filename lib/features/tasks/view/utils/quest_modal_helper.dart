@@ -4,7 +4,8 @@ import '../../model/quest.dart';
 import '../../viewmodel/tasks_viewmodel.dart';
 import '../widgets/add_quest_bottom_sheet.dart';
 
-class QuestModalHandler {
+/// UI helper for showing quest-related modals
+class QuestModalHelper {
   /// Show add quest modal
   static Future<void> showAddQuestModal({
     required BuildContext context,

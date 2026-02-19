@@ -2,8 +2,8 @@ import 'package:flutter/foundation.dart';
 
 import '../../../core/resources/app_images.dart';
 import '../../../core/services/quest_cleanup_service.dart';
-import '../data/hero_profile_repository.dart';
-import '../data/local_hero_profile_repository.dart';
+import '../data/repositories/hero_profile_repository.dart';
+import '../data/local/local_hero_profile_repository.dart';
 import '../model/hero_profile.dart';
 import '../model/quest.dart';
 

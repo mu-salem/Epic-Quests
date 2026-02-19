@@ -5,7 +5,7 @@ import 'package:provider/provider.dart';
 import '../../../core/theme/app_colors.dart';
 import '../model/quest.dart';
 import '../viewmodel/tasks_viewmodel.dart';
-import 'helpers/quest_modal_handler.dart';
+import 'utils/quest_modal_helper.dart';
 import 'widgets/home_content_widget.dart';
 import 'widgets/new_quest_button.dart';
 
@@ -75,7 +75,7 @@ class _TasksHomeScreenState extends State<TasksHomeScreen> with SingleTickerProv
 
   /// Handle quest tap (show edit modal)
   void _handleQuestTap(Quest quest) {
-    QuestModalHandler.showEditQuestModal(
+    QuestModalHelper.showEditQuestModal(
       context: context,
       viewModel: context.read<TasksViewModel>(),
       quest: quest,
@@ -84,7 +84,7 @@ class _TasksHomeScreenState extends State<TasksHomeScreen> with SingleTickerProv
 
   /// Handle new quest button press
   void _handleNewQuestPress() {
-    QuestModalHandler.showAddQuestModal(
+    QuestModalHelper.showAddQuestModal(
       context: context,
       viewModel: context.read<TasksViewModel>(),
     );

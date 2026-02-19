@@ -75,7 +75,7 @@ class PrimaryButton extends StatelessWidget {
     final defaultPadding = padding ?? EdgeInsets.symmetric(horizontal: 40.w, vertical: 16.h);
     
     // Shadow defaults
-    final defaultShadowColor = shadowColor ?? AppColors.primary.withOpacity(0.3);
+    final defaultShadowColor = shadowColor ?? AppColors.primary..withValues(alpha: 0.3);
     final defaultShadowBlur = shadowBlurRadius ?? 12.0;
     final defaultShadowSpread = shadowSpreadRadius ?? 2.0;
 
