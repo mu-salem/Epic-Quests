@@ -1,5 +1,6 @@
 import 'dart:ui';
 
+import 'package:epicquests/core/theme/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
@@ -84,12 +85,12 @@ class _SplashScreenState extends State<SplashScreen>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.black,
+      backgroundColor: AppColors.black,
       body: Stack(
         fit: StackFit.expand,
         children: [
           if (!_isReady)
-            const ColoredBox(color: Colors.black)
+            const ColoredBox(color: AppColors.black)
           else ...[
             Positioned.fill(
               child: FittedBox(
@@ -105,9 +106,7 @@ class _SplashScreenState extends State<SplashScreen>
             Positioned.fill(
               child: BackdropFilter(
                 filter: ImageFilter.blur(sigmaX: 18, sigmaY: 18),
-                child: Container(
-                  color: Colors.black.withValues(alpha: 0.35),
-                ),
+                child: Container(color: AppColors.black.withValues(alpha: 0.35)),
               ),
             ),
 
@@ -129,7 +128,7 @@ class _SplashScreenState extends State<SplashScreen>
                   textAlign: TextAlign.center,
                 ),
               ),
-              
+
               Positioned(
                 bottom: 80.h,
                 left: 0,
@@ -153,7 +152,9 @@ class _SplashScreenState extends State<SplashScreen>
               ignoring: true,
               child: FadeTransition(
                 opacity: _fadeInNextScreen,
-                child: Container(color: Colors.black.withValues(alpha: 0.15)),
+                child: Container(
+                  color: AppColors.black.withValues(alpha: 0.15),
+                ),
               ),
             ),
           ],
