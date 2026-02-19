@@ -22,12 +22,20 @@ class AppImages {
   static const String avatarLeo = '$_avatarPath/Leo.png';
   static const String avatarJax = '$_avatarPath/Jax.png';
   static const String avatarKane = '$_avatarPath/Kane.png';
+  static const String avatarLynx = '$_avatarPath/Lynx.png';
+  static const String avatarCedric = '$_avatarPath/Cedric.png';
+  static const String avatarRagnar = '$_avatarPath/Ragnar.png';
+  static const String avatarOrion = '$_avatarPath/Orion.png';
 
   // Girl Avatars
   static const String avatarLuna = '$_avatarPath/Luna.png';
   static const String avatarKira = '$_avatarPath/Kira.png';
   static const String avatarElara = '$_avatarPath/Elara.png';
   static const String avatarVexa = '$_avatarPath/Vexa.png';
+  static const String avatarSeraphina = '$_avatarPath/Seraphina.png';
+  static const String avatarKaela = '$_avatarPath/Kaela.png';
+  static const String avatarSylvi = '$_avatarPath/Sylvi.png';
+  static const String avatarNyra = '$_avatarPath/Nyra.png';
 
   // Other Images
   static const String map = '$_basePath/Map.png';

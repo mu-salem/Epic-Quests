@@ -1,6 +1,9 @@
 // Onboarding widgets barrel file
-export 'avatar_card.dart';
-export 'avatar_header_card.dart';
-export 'avatar_tabs.dart';
-export 'dots_indicator.dart';
-export 'section_header.dart';
+// Avatar widgets
+export 'avatar/avatar_widgets.dart';
+
+// Bottom sheets
+export 'bottom_sheets/bottom_sheets.dart';
+
+// Common widgets
+export 'common/common_widgets.dart';

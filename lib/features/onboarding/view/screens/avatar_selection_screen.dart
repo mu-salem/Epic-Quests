@@ -1,18 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'dart:ui';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
-import '../../../../core/resources/app_images.dart';
 import '../../../../core/widgets/spacing_widgets.dart';
-import '../../../../core/theme/app_colors.dart';
 import '../../../../core/widgets/primary_button.dart';
+import '../../../../core/theme/app_colors.dart';
 import '../../viewmodel/avatar_selection_viewmodel.dart';
-import '../widgets/avatar_card.dart';
-import '../widgets/avatar_header_card.dart';
-import '../widgets/avatar_tabs.dart';
-import '../widgets/dots_indicator.dart';
+import '../../model/avatar_item.dart';
+import '../widgets/avatar/avatar_background.dart';
+import '../widgets/avatar/avatar_header_card.dart';
+import '../widgets/avatar/avatar_tabs.dart';
+import '../widgets/avatar/avatar_page_view.dart';
+import '../widgets/avatar/create_avatar_button.dart';
+import '../widgets/common/dots_indicator.dart';
+import '../widgets/bottom_sheets/add_avatar_bottom_sheet.dart';
+import '../widgets/bottom_sheets/edit_avatar_bottom_sheet.dart';
 
 class AvatarSelectionScreen extends StatefulWidget {
   const AvatarSelectionScreen({super.key});
@@ -46,7 +49,7 @@ class _AvatarSelectionScreenState extends State<AvatarSelectionScreen> {
 
   /// Listen to ViewModel changes and update PageController if needed
   void _onViewModelChanged() {
-    if (_pageController.hasClients) {
+    if (_pageController.hasClients && _viewModel.hasAvatars) {
       // If tab switched, jump to first page
       if (_pageController.page?.round() != _viewModel.selectedIndex) {
         _pageController.jumpToPage(_viewModel.selectedIndex);
@@ -62,6 +65,49 @@ class _AvatarSelectionScreenState extends State<AvatarSelectionScreen> {
     }
   }
 
+  /// Show add avatar bottom sheet
+  void _showAddAvatarSheet() {
+    final availableTemplates = _viewModel.availableTemplatesForCurrentTab;
+
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: AppColors.transparent,
+      builder: (context) => AddAvatarBottomSheet(
+        templates: availableTemplates,
+        onCreateAvatar: (template, customName, description) async {
+          await _viewModel.createAvatar(
+            template: template,
+            customName: customName,
+            description: description,
+          );
+        },
+      ),
+    );
+  }
+
+  /// Show edit avatar bottom sheet
+  void _showEditAvatarSheet(AvatarItem avatar) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: AppColors.transparent,
+      builder: (context) => EditAvatarBottomSheet(
+        avatar: avatar,
+        onUpdate: (customName, description) async {
+          final updatedAvatar = avatar.copyWith(
+            displayName: customName ?? avatar.templateName,
+            description: description,
+          );
+          await _viewModel.updateAvatar(updatedAvatar);
+        },
+        onDelete: () async {
+          await _viewModel.deleteAvatar(avatar.id);
+        },
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final sliderHeight = 240.h;
@@ -73,19 +119,9 @@ class _AvatarSelectionScreenState extends State<AvatarSelectionScreen> {
 
         body: Stack(
           children: [
-            // Background image
-            Positioned.fill(
-              child: Image.asset(AppImages.avatarCoverPage, fit: BoxFit.cover),
-            ),
-
-            // Blur overlay
-            Positioned.fill(
-              child: BackdropFilter(
-                filter: ImageFilter.blur(sigmaX: 8, sigmaY: 8),
-                child: Container(
-                  color: AppColors.backgroundDark.withValues(alpha: 0.5),
-                ),
-              ),
+            // Background with blur
+            const Positioned.fill(
+              child: AvatarBackground(),
             ),
 
             // Main content
@@ -109,50 +145,42 @@ class _AvatarSelectionScreenState extends State<AvatarSelectionScreen> {
 
                     HeightSpacer(24),
 
-                    Consumer<AvatarSelectionViewModel>(
-                      builder: (context, viewModel, _) {
-                        return SizedBox(
-                          height: sliderHeight,
-                          child: PageView.builder(
-                            controller: _pageController,
-                            itemCount: viewModel.currentAvatars.length,
-                            onPageChanged: viewModel.selectAvatar,
-                            itemBuilder: (context, index) {
-                              final isSelected = index == viewModel.selectedIndex;
-                              return AvatarCard(
-                                item: viewModel.currentAvatars[index],
-                                selected: isSelected,
-                                onTap: () {
-                                  viewModel.selectAvatar(index);
-                                  _pageController.animateToPage(
-                                    index,
-                                    duration: const Duration(milliseconds: 240),
-                                    curve: Curves.easeOut,
-                                  );
-                                },
-                              );
-                            },
-                          ),
-                        );
-                      },
+                    // Create Avatar Button
+                    CreateAvatarButton(onPressed: _showAddAvatarSheet),
+
+                    HeightSpacer(24),
+
+                    // Avatar PageView with loading and empty states
+                    AvatarPageView(
+                      pageController: _pageController,
+                      height: sliderHeight,
+                      onLongPress: _showEditAvatarSheet,
                     ),
 
                     HeightSpacer(16),
 
+                    // Dots Indicator
                     Consumer<AvatarSelectionViewModel>(
-                      builder: (context, viewModel, _) => DotsIndicator(
-                        count: viewModel.currentAvatars.length,
-                        index: viewModel.selectedIndex,
-                      ),
+                      builder: (context, viewModel, _) {
+                        if (!viewModel.hasAvatars) {
+                          return const SizedBox.shrink();
+                        }
+                        return DotsIndicator(
+                          count: viewModel.currentAvatars.length,
+                          index: viewModel.selectedIndex,
+                        );
+                      },
                     ),
 
                     const Spacer(),
 
                     // Confirm button
-                    PrimaryButton(
-                      text: 'CONFIRM HERO',
-                      width: double.infinity,
-                      onPressed: _onConfirm,
+                    Consumer<AvatarSelectionViewModel>(
+                      builder: (context, viewModel, _) => PrimaryButton(
+                        text: 'CONFIRM HERO',
+                        width: double.infinity,
+                        onPressed: viewModel.hasAvatars ? _onConfirm : null,
+                      ),
                     ),
 
                     HeightSpacer(12),
