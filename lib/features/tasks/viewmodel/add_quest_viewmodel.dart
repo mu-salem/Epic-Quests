@@ -18,6 +18,7 @@ class AddQuestViewModel extends ChangeNotifier {
 
   // Validation
   String? _titleError;
+  bool _showValidationErrors = false;
 
   // Constructor
   AddQuestViewModel({this.questToEdit}) {
@@ -35,13 +36,15 @@ class AddQuestViewModel extends ChangeNotifier {
   String? get description => _description;
   QuestPriority get priority => _priority;
   DateTime? get deadline => _deadline;
-  String? get titleError => _titleError;
+  String? get titleError => _showValidationErrors ? _titleError : null;
   bool get isValid => _title.trim().isNotEmpty;
 
   /// Update title
   void updateTitle(String value) {
     _title = value;
-    _validateTitle();
+    if (_showValidationErrors) {
+      _validateTitle();
+    }
     notifyListeners();
   }
 
@@ -76,6 +79,7 @@ class AddQuestViewModel extends ChangeNotifier {
 
   /// Validate all fields
   bool validate() {
+    _showValidationErrors = true;
     _validateTitle();
     notifyListeners();
     return isValid;
@@ -112,6 +116,7 @@ class AddQuestViewModel extends ChangeNotifier {
     _priority = QuestPriority.medium;
     _deadline = null;
     _titleError = null;
+    _showValidationErrors = false;
     notifyListeners();
   }
 }

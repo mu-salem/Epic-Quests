@@ -6,6 +6,7 @@ import '../../../../core/routing/app_router.dart';
 import '../../../../core/widgets/spacing_widgets.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/widgets/primary_button.dart';
+import '../../../../core/widgets/pixel_notification.dart';
 import '../../viewmodel/forgot_password_email_viewmodel.dart';
 import '../widgets/auth_scaffold.dart';
 import '../widgets/auth_text_field.dart';
@@ -43,12 +44,11 @@ class _ForgotPasswordEmailScreenState extends State<ForgotPasswordEmailScreen> {
     final success = await _viewModel.sendResetCode();
 
     if (success && mounted) {
-      // Show success message
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(_viewModel.successMessage ?? 'Success!'),
-          backgroundColor: AppColors.success,
-        ),
+      // Show success notification
+      PixelNotification.show(
+        context,
+        message: _viewModel.successMessage ?? 'Success!',
+        type: NotificationType.success,
       );
 
       // Navigate to code verification with email
@@ -56,12 +56,11 @@ class _ForgotPasswordEmailScreenState extends State<ForgotPasswordEmailScreen> {
         '${AppRouter.forgotPasswordCode}?email=${_viewModel.email}',
       );
     } else if (mounted && _viewModel.errorMessage != null) {
-      // Show error message
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(_viewModel.errorMessage!),
-          backgroundColor: AppColors.error,
-        ),
+      // Show error notification
+      PixelNotification.show(
+        context,
+        message: _viewModel.errorMessage!,
+        type: NotificationType.error,
       );
     }
   }

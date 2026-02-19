@@ -6,6 +6,7 @@ import '../../../../core/routing/app_router.dart';
 import '../../../../core/widgets/spacing_widgets.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/widgets/primary_button.dart';
+import '../../../../core/widgets/pixel_notification.dart';
 import '../../viewmodel/reset_password_viewmodel.dart';
 import '../widgets/auth_scaffold.dart';
 import '../widgets/auth_text_field.dart';
@@ -56,23 +57,21 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
     final success = await _viewModel.resetPassword();
 
     if (success && mounted) {
-      // Show success message
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(_viewModel.successMessage ?? 'Success!'),
-          backgroundColor: AppColors.success,
-        ),
+      // Show success notification
+      PixelNotification.show(
+        context,
+        message: _viewModel.successMessage ?? 'Success!',
+        type: NotificationType.success,
       );
 
       // Navigate to login
       context.go(AppRouter.login);
     } else if (mounted && _viewModel.errorMessage != null) {
-      // Show error message
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(_viewModel.errorMessage!),
-          backgroundColor: AppColors.error,
-        ),
+      // Show error notification
+      PixelNotification.show(
+        context,
+        message: _viewModel.errorMessage!,
+        type: NotificationType.error,
       );
     }
   }
