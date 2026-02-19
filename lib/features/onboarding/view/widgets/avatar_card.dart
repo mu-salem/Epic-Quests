@@ -3,7 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_text_styles.dart';
-import 'avatar_item.dart';
+import '../../model/avatar_item.dart';
 
 class AvatarCard extends StatelessWidget {
   const AvatarCard({

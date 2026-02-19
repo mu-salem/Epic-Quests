@@ -1,13 +1,11 @@
 import '../../../core/services/xp_service.dart';
 import 'quest.dart';
 
-/// Hero Profile Model
-/// 
-/// Represents a hero (avatar) with their progress, stats, and quests
+
 class HeroProfile {
   final String name;
   final String avatarAsset;
-  final String gender; // 'boy' or 'girl'
+  final String gender; 
   final int level;
   final int currentXP;
   final List<Quest> quests;

@@ -15,6 +15,10 @@
         {
             "filePath": "lib\\features\\onboarding",
             "group": "Default"
+        },
+        {
+            "filePath": "lib\\core\\widgets",
+            "group": "Default"
         }
     ]
 }
