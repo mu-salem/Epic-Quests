@@ -17,7 +17,7 @@ class LocalHeroProfileRepository implements HeroProfileRepository {
   @override
   Future<void> saveHeroProfile(HeroProfile profile) async {
     await LocalStorageService.setJson(
-      StorageKeys.heroProfile(profile.name),
+      StorageKeys.heroProfile(profile.id), // Use id instead of name
       profile.toJson(),
     );
   }

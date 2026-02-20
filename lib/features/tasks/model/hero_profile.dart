@@ -3,6 +3,7 @@ import 'quest.dart';
 
 
 class HeroProfile {
+  final String id; // Unique identifier for the hero
   final String name;
   final String avatarAsset;
   final String gender; 
@@ -11,6 +12,7 @@ class HeroProfile {
   final List<Quest> quests;
 
   HeroProfile({
+    required this.id,
     required this.name,
     required this.avatarAsset,
     required this.gender,
@@ -57,6 +59,7 @@ class HeroProfile {
 
   /// Copy with method
   HeroProfile copyWith({
+    String? id,
     String? name,
     String? avatarAsset,
     String? gender,
@@ -65,6 +68,7 @@ class HeroProfile {
     List<Quest>? quests,
   }) {
     return HeroProfile(
+      id: id ?? this.id,
       name: name ?? this.name,
       avatarAsset: avatarAsset ?? this.avatarAsset,
       gender: gender ?? this.gender,
@@ -77,6 +81,7 @@ class HeroProfile {
   /// Convert to JSON
   Map<String, dynamic> toJson() {
     return {
+      'id': id,
       'name': name,
       'avatarAsset': avatarAsset,
       'gender': gender,
@@ -89,6 +94,7 @@ class HeroProfile {
   /// Create from JSON
   factory HeroProfile.fromJson(Map<String, dynamic> json) {
     return HeroProfile(
+      id: json['id'] as String,
       name: json['name'] as String,
       avatarAsset: json['avatarAsset'] as String,
       gender: json['gender'] as String,

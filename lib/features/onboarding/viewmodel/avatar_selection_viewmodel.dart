@@ -135,6 +135,7 @@ class AvatarSelectionViewModel extends ChangeNotifier {
       await _heroRepository.setLastSelectedHero(avatar.id);
     } else {
       final newHero = HeroProfile(
+        id: avatar.id,
         name: avatar.displayName,
         avatarAsset: avatar.asset,
         gender: avatar.gender,

@@ -7,6 +7,7 @@ import '../../../../core/routing/app_router.dart';
 import '../../../../core/widgets/spacing_widgets.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/widgets/primary_button.dart';
+import '../../../../core/widgets/error_message_box.dart';
 import '../../viewmodel/forgot_password_code_viewmodel.dart';
 import '../widgets/auth_scaffold.dart';
 import '../widgets/auth_text_field.dart';
@@ -100,6 +101,12 @@ class _ForgotPasswordCodeScreenState extends State<ForgotPasswordCodeScreen> {
                 ),
 
                 HeightSpacer(32),
+
+                // Error message
+                if (viewModel.errorMessage != null) ...[  
+                  ErrorMessageBox(message: viewModel.errorMessage!),
+                  HeightSpacer(16),
+                ],
 
                 // Verify button
                 PrimaryButton(

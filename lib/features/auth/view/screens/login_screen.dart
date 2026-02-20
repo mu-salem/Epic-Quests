@@ -7,6 +7,7 @@ import '../../../../core/widgets/spacing_widgets.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_text_styles.dart';
 import '../../../../core/widgets/primary_button.dart';
+import '../../../../core/widgets/error_message_box.dart';
 import '../../viewmodel/login_viewmodel.dart';
 import '../widgets/auth_link_row.dart';
 import '../widgets/auth_scaffold.dart';
@@ -118,6 +119,12 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
 
                 HeightSpacer(32),
+
+                // Error message
+                if (viewModel.errorMessage != null) ...[  
+                  ErrorMessageBox(message: viewModel.errorMessage!),
+                  HeightSpacer(16),
+                ],
 
                 // Login button
                 PrimaryButton(
