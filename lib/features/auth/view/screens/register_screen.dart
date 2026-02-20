@@ -6,7 +6,6 @@ import '../../../../core/routing/app_router.dart';
 import '../../../../core/widgets/spacing_widgets.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/widgets/primary_button.dart';
-import '../../../../core/widgets/pixel_notification.dart';
 import '../../viewmodel/register_viewmodel.dart';
 import '../widgets/auth_link_row.dart';
 import '../widgets/auth_scaffold.dart';
@@ -57,22 +56,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
     final success = await _viewModel.register();
 
     if (success && mounted) {
-      // Show success notification
-      PixelNotification.show(
-        context,
-        message: _viewModel.successMessage ?? 'Success!',
-        type: NotificationType.success,
-      );
-
       // Navigate to avatar selection
       context.go(AppRouter.onboardingAvatar);
-    } else if (mounted && _viewModel.errorMessage != null) {
-      // Show error notification
-      PixelNotification.show(
-        context,
-        message: _viewModel.errorMessage!,
-        type: NotificationType.error,
-      );
     }
   }
 

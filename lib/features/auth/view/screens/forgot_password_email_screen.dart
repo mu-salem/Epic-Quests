@@ -6,7 +6,6 @@ import '../../../../core/routing/app_router.dart';
 import '../../../../core/widgets/spacing_widgets.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/widgets/primary_button.dart';
-import '../../../../core/widgets/pixel_notification.dart';
 import '../../viewmodel/forgot_password_email_viewmodel.dart';
 import '../widgets/auth_scaffold.dart';
 import '../widgets/auth_text_field.dart';
@@ -16,7 +15,8 @@ class ForgotPasswordEmailScreen extends StatefulWidget {
   const ForgotPasswordEmailScreen({super.key});
 
   @override
-  State<ForgotPasswordEmailScreen> createState() => _ForgotPasswordEmailScreenState();
+  State<ForgotPasswordEmailScreen> createState() =>
+      _ForgotPasswordEmailScreenState();
 }
 
 class _ForgotPasswordEmailScreenState extends State<ForgotPasswordEmailScreen> {
@@ -44,24 +44,8 @@ class _ForgotPasswordEmailScreenState extends State<ForgotPasswordEmailScreen> {
     final success = await _viewModel.sendResetCode();
 
     if (success && mounted) {
-      // Show success notification
-      PixelNotification.show(
-        context,
-        message: _viewModel.successMessage ?? 'Success!',
-        type: NotificationType.success,
-      );
-
       // Navigate to code verification with email
-      context.push(
-        '${AppRouter.forgotPasswordCode}?email=${_viewModel.email}',
-      );
-    } else if (mounted && _viewModel.errorMessage != null) {
-      // Show error notification
-      PixelNotification.show(
-        context,
-        message: _viewModel.errorMessage!,
-        type: NotificationType.error,
-      );
+      context.push('${AppRouter.forgotPasswordCode}?email=${_viewModel.email}');
     }
   }
 
@@ -80,9 +64,7 @@ class _ForgotPasswordEmailScreenState extends State<ForgotPasswordEmailScreen> {
                 Align(
                   alignment: Alignment.centerLeft,
                   child: IconButton(
-                    onPressed: viewModel.isLoading
-                        ? null
-                        : () => context.pop(),
+                    onPressed: viewModel.isLoading ? null : () => context.pop(),
                     icon: const Icon(
                       Icons.arrow_back,
                       color: AppColors.textPrimary,
@@ -118,6 +100,8 @@ class _ForgotPasswordEmailScreenState extends State<ForgotPasswordEmailScreen> {
                   text: 'SEND CODE',
                   isLoading: viewModel.isLoading,
                   backgroundColor: AppColors.panelLight,
+                  borderColor: AppColors.accent,
+                  shadowColor: AppColors.accent,
                   textColor: AppColors.backgroundDark,
                   width: double.infinity,
                 ),
