@@ -33,7 +33,7 @@ class CalendarViewModel extends ChangeNotifier {
     _questEventsMap.clear();
     for (final q in allQuests) {
       final d = q.deadline ?? q.createdAt;
-      final dateKey = DateTime(d.year, d.month, d.day);
+      final dateKey = DateTime.utc(d.year, d.month, d.day);
       if (_questEventsMap.containsKey(dateKey)) {
         _questEventsMap[dateKey]!.add(q);
       } else {
@@ -46,7 +46,7 @@ class CalendarViewModel extends ChangeNotifier {
 
   /// Quests due/created on a specific day
   List<Quest> questsForDay(DateTime day) {
-    final dateKey = DateTime(day.year, day.month, day.day);
+    final dateKey = DateTime.utc(day.year, day.month, day.day);
     return _questEventsMap[dateKey] ?? [];
   }
 

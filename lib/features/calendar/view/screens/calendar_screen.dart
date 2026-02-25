@@ -131,6 +131,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
         onDaySelected: vm.onDaySelected,
         onPageChanged: vm.onPageChanged,
         eventLoader: vm.getEventsForDay,
+        weekendDays: const [DateTime.friday, DateTime.saturday],
         rowHeight: 60.h,
         calendarStyle: CalendarStyle(
           todayDecoration: BoxDecoration(
