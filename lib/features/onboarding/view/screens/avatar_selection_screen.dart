@@ -12,7 +12,6 @@ import '../widgets/avatar/avatar_background.dart';
 import '../widgets/avatar/avatar_header_card.dart';
 import '../widgets/avatar/avatar_tabs.dart';
 import '../widgets/avatar/avatar_page_view.dart';
-import '../widgets/avatar/create_avatar_button.dart';
 import '../widgets/common/dots_indicator.dart';
 import '../widgets/bottom_sheets/add_avatar_bottom_sheet.dart';
 import '../widgets/bottom_sheets/edit_avatar_bottom_sheet.dart';
@@ -32,10 +31,7 @@ class _AvatarSelectionScreenState extends State<AvatarSelectionScreen> {
   void initState() {
     super.initState();
     _viewModel = AvatarSelectionViewModel();
-    _pageController = PageController(
-      viewportFraction: 0.5,
-      initialPage: 0,
-    );
+    _pageController = PageController(viewportFraction: 0.5, initialPage: 0);
     _viewModel.addListener(_onViewModelChanged);
   }
 
@@ -51,17 +47,40 @@ class _AvatarSelectionScreenState extends State<AvatarSelectionScreen> {
   void _onViewModelChanged() {
     if (_pageController.hasClients && _viewModel.hasAvatars) {
       // If tab switched, jump to first page
-      if (_pageController.page?.round() != _viewModel.selectedIndex) {
-        _pageController.jumpToPage(_viewModel.selectedIndex);
+      if (_pageController.page?.round() != _viewModel.selectedIndex + 1) {
+        _pageController.jumpToPage(_viewModel.selectedIndex + 1);
       }
     }
   }
 
   /// Handle avatar confirmation
   Future<void> _onConfirm() async {
-    final route = await _viewModel.confirmHero();
-    if (mounted) {
-      context.go(route);
+    debugPrint('🎯 [Avatar] ========== _onConfirm START ==========');
+    try {
+      debugPrint('🎯 [Avatar] Confirm button pressed');
+      debugPrint('🎯 [Avatar] Calling confirmHero...');
+      final route = await _viewModel.confirmHero();
+      debugPrint('🎯 [Avatar] Route received: $route');
+
+      if (mounted) {
+        debugPrint('🎯 [Avatar] Widget is mounted, navigating to: $route');
+        context.go(route);
+        debugPrint('✅ [Avatar] Navigation called');
+        debugPrint(
+          '🎯 [Avatar] ========== _onConfirm END (SUCCESS) ==========',
+        );
+      } else {
+        debugPrint('❌ [Avatar] Widget not mounted!');
+        debugPrint(
+          '🎯 [Avatar] ========== _onConfirm END (NOT MOUNTED) ==========',
+        );
+      }
+    } catch (e, stackTrace) {
+      debugPrint('❌ [Avatar] ========== EXCEPTION in _onConfirm ==========');
+      debugPrint('❌ [Avatar] Error in _onConfirm: $e');
+      debugPrint('❌ [Avatar] Error type: ${e.runtimeType}');
+      debugPrint('❌ [Avatar] Stack trace: $stackTrace');
+      debugPrint('🎯 [Avatar] ========== _onConfirm END (ERROR) ==========');
     }
   }
 
@@ -120,9 +139,7 @@ class _AvatarSelectionScreenState extends State<AvatarSelectionScreen> {
         body: Stack(
           children: [
             // Background with blur
-            const Positioned.fill(
-              child: AvatarBackground(),
-            ),
+            const Positioned.fill(child: AvatarBackground()),
 
             // Main content
             SafeArea(
@@ -145,16 +162,12 @@ class _AvatarSelectionScreenState extends State<AvatarSelectionScreen> {
 
                     HeightSpacer(24),
 
-                    // Create Avatar Button
-                    CreateAvatarButton(onPressed: _showAddAvatarSheet),
-
-                    HeightSpacer(24),
-
                     // Avatar PageView with loading and empty states
                     AvatarPageView(
                       pageController: _pageController,
                       height: sliderHeight,
                       onLongPress: _showEditAvatarSheet,
+                      onCreateTap: _showAddAvatarSheet,
                     ),
 
                     HeightSpacer(16),
@@ -166,8 +179,9 @@ class _AvatarSelectionScreenState extends State<AvatarSelectionScreen> {
                           return const SizedBox.shrink();
                         }
                         return DotsIndicator(
-                          count: viewModel.currentAvatars.length,
-                          index: viewModel.selectedIndex,
+                          count: viewModel.currentAvatars.length + 1,
+                          // Index + 1 because UI page index 0 is "Create"
+                          index: viewModel.selectedIndex + 1,
                         );
                       },
                     ),
@@ -179,7 +193,10 @@ class _AvatarSelectionScreenState extends State<AvatarSelectionScreen> {
                       builder: (context, viewModel, _) => PrimaryButton(
                         text: 'CONFIRM HERO',
                         width: double.infinity,
-                        onPressed: viewModel.hasAvatars ? _onConfirm : null,
+                        onPressed: viewModel.isLoading || !viewModel.hasAvatars
+                            ? null
+                            : _onConfirm,
+                        isLoading: viewModel.isLoading,
                       ),
                     ),
 

@@ -7,11 +7,7 @@ import '../../../../../core/widgets/spacing_widgets.dart';
 
 /// Title input field for quest form
 class QuestTitleField extends StatelessWidget {
-  const QuestTitleField({
-    super.key,
-    required this.controller,
-    this.errorText,
-  });
+  const QuestTitleField({super.key, required this.controller, this.errorText});
 
   final TextEditingController controller;
   final String? errorText;
@@ -23,16 +19,12 @@ class QuestTitleField extends StatelessWidget {
       children: [
         Text(
           'Quest Title *',
-          style: AppTextStyles.bodyM.copyWith(
-            color: AppColors.textSecondary,
-          ),
+          style: AppTextStyles.bodyM.copyWith(color: AppColors.textSecondary),
         ),
         HeightSpacer(8),
         TextFormField(
           controller: controller,
-          style: AppTextStyles.bodyM.copyWith(
-            color: AppColors.textPrimary,
-          ),
+          style: AppTextStyles.bodyM.copyWith(color: AppColors.textPrimary),
           decoration: InputDecoration(
             hintText: 'Enter quest name...',
             hintStyle: AppTextStyles.hint,

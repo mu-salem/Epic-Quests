@@ -1,6 +1,6 @@
 import 'package:flutter/foundation.dart';
 
-import '../data/local/fake_auth_repository.dart';
+import '../data/remote/api_auth_repository.dart';
 import '../data/repositories/auth_repository.dart';
 
 /// ViewModel for Register screen
@@ -8,12 +8,12 @@ class RegisterViewModel extends ChangeNotifier {
   final AuthRepository _repository;
 
   RegisterViewModel({AuthRepository? repository})
-      : _repository = repository ?? FakeAuthRepository();
+    : _repository = repository ?? ApiAuthRepository();
 
   // Form state
+  String _username = '';
   String _email = '';
   String _password = '';
-  String _confirmPassword = '';
 
   // UI state
   bool _isLoading = false;
@@ -22,27 +22,45 @@ class RegisterViewModel extends ChangeNotifier {
   bool _showValidationErrors = false;
 
   // Validation errors
+  String? _usernameError;
   String? _emailError;
   String? _passwordError;
   String? _confirmPasswordError;
 
   // Getters
+  String get username => _username;
   String get email => _email;
   String get password => _password;
-  String get confirmPassword => _confirmPassword;
   bool get isLoading => _isLoading;
   String? get errorMessage => _errorMessage;
   String? get successMessage => _successMessage;
+  String? get usernameError => _showValidationErrors ? _usernameError : null;
   String? get emailError => _showValidationErrors ? _emailError : null;
   String? get passwordError => _showValidationErrors ? _passwordError : null;
-  String? get confirmPasswordError => _showValidationErrors ? _confirmPasswordError : null;
+  String? get confirmPasswordError =>
+      _showValidationErrors ? _confirmPasswordError : null;
+
+  bool get userExistsError =>
+      _errorMessage != null &&
+      (_errorMessage!.toLowerCase().contains('already exists') ||
+          _errorMessage!.toLowerCase().contains('duplicate'));
+
   bool get isValid =>
+      _username.isNotEmpty &&
       _email.isNotEmpty &&
       _password.isNotEmpty &&
-      _confirmPassword.isNotEmpty &&
+      _usernameError == null &&
       _emailError == null &&
       _passwordError == null &&
       _confirmPasswordError == null;
+
+  /// Update username
+  void updateUsername(String value) {
+    _username = value;
+    _validateUsername();
+    _clearMessages();
+    notifyListeners();
+  }
 
   /// Update email
   void updateEmail(String value) {
@@ -56,17 +74,24 @@ class RegisterViewModel extends ChangeNotifier {
   void updatePassword(String value) {
     _password = value;
     _validatePassword();
-    _validateConfirmPassword();
     _clearMessages();
     notifyListeners();
   }
 
-  /// Update confirm password
-  void updateConfirmPassword(String value) {
-    _confirmPassword = value;
-    _validateConfirmPassword();
-    _clearMessages();
-    notifyListeners();
+  /// Validate username
+  void _validateUsername() {
+    if (_username.isEmpty) {
+      _usernameError = null;
+      return;
+    }
+
+    if (_username.length < 3) {
+      _usernameError = 'Username must be at least 3 characters';
+    } else if (_username.length > 20) {
+      _usernameError = 'Username must be less than 20 characters';
+    } else {
+      _usernameError = null;
+    }
   }
 
   /// Validate email format
@@ -98,20 +123,6 @@ class RegisterViewModel extends ChangeNotifier {
     }
   }
 
-  /// Validate confirm password
-  void _validateConfirmPassword() {
-    if (_confirmPassword.isEmpty) {
-      _confirmPasswordError = null;
-      return;
-    }
-
-    if (_confirmPassword != _password) {
-      _confirmPasswordError = 'Passwords do not match';
-    } else {
-      _confirmPasswordError = null;
-    }
-  }
-
   /// Clear error and success messages
   void _clearMessages() {
     _errorMessage = null;
@@ -121,9 +132,13 @@ class RegisterViewModel extends ChangeNotifier {
   /// Validate all fields
   bool validate() {
     _showValidationErrors = true;
+    _validateUsername();
     _validateEmail();
     _validatePassword();
-    _validateConfirmPassword();
+
+    if (_username.isEmpty) {
+      _usernameError = 'Username is required';
+    }
 
     if (_email.isEmpty) {
       _emailError = 'Email is required';
@@ -131,10 +146,6 @@ class RegisterViewModel extends ChangeNotifier {
 
     if (_password.isEmpty) {
       _passwordError = 'Password is required';
-    }
-
-    if (_confirmPassword.isEmpty) {
-      _confirmPasswordError = 'Confirm password is required';
     }
 
     notifyListeners();
@@ -153,7 +164,7 @@ class RegisterViewModel extends ChangeNotifier {
     notifyListeners();
 
     try {
-      final result = await _repository.register(_email, _password);
+      final result = await _repository.register(_username, _email, _password);
 
       _isLoading = false;
 
@@ -176,9 +187,10 @@ class RegisterViewModel extends ChangeNotifier {
 
   /// Clear all form data
   void clear() {
+    _username = '';
     _email = '';
     _password = '';
-    _confirmPassword = '';
+    _usernameError = null;
     _emailError = null;
     _passwordError = null;
     _confirmPasswordError = null;

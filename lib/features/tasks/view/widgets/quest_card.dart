@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';
-
+import '../../../../core/resources/app_icons.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/widgets/spacing_widgets.dart';
 import '../../../../core/theme/app_text_styles.dart';
@@ -61,10 +61,7 @@ class QuestCard extends StatelessWidget {
               Row(
                 children: [
                   // Priority Icon
-                  Text(
-                    quest.priority.icon,
-                    style: TextStyle(fontSize: 20.sp),
-                  ),
+                  _getPriorityIcon(quest.priority, width: 24.w, height: 24.h),
 
                   WidthSpacer(8),
 
@@ -104,7 +101,8 @@ class QuestCard extends StatelessWidget {
               ),
 
               // Description (if exists)
-              if (quest.description != null && quest.description!.isNotEmpty) ...[
+              if (quest.description != null &&
+                  quest.description!.isNotEmpty) ...[
                 HeightSpacer(8),
                 Text(
                   quest.description!,
@@ -125,17 +123,15 @@ class QuestCard extends StatelessWidget {
                   if (quest.deadline != null)
                     Row(
                       children: [
-                        Icon(
-                          Icons.access_time_rounded,
-                          size: 16.sp,
-                          color: AppColors.backgroundDark.withValues(alpha: 0.7),
-                        ),
+                        AppIcons.timeSpentHourglass(width: 16.w, height: 16.h),
                         WidthSpacer(4),
                         Text(
                           'Due: ${_formatDate(quest.deadline!)}',
                           style: AppTextStyles.caption.copyWith(
                             fontSize: 14.sp,
-                            color: AppColors.backgroundDark.withValues(alpha: 0.7),
+                            color: AppColors.backgroundDark.withValues(
+                              alpha: 0.7,
+                            ),
                           ),
                         ),
                       ],
@@ -185,6 +181,22 @@ class QuestCard extends StatelessWidget {
         return AppColors.priorityMedium;
       case QuestPriority.high:
         return AppColors.priorityHigh;
+    }
+  }
+
+  /// Get icon based on priority
+  Widget _getPriorityIcon(
+    QuestPriority priority, {
+    double? width,
+    double? height,
+  }) {
+    switch (priority) {
+      case QuestPriority.low:
+        return AppIcons.lowPriority(width: width, height: height);
+      case QuestPriority.medium:
+        return AppIcons.mediumPriority(width: width, height: height);
+      case QuestPriority.high:
+        return AppIcons.highPriority(width: width, height: height);
     }
   }
 

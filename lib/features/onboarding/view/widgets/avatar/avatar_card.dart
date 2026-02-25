@@ -62,7 +62,7 @@ class AvatarCard extends StatelessWidget {
                           blurRadius: 26,
                           spreadRadius: 2,
                           offset: const Offset(0, 10),
-                        )
+                        ),
                       ]
                     : [
                         BoxShadow(
@@ -70,7 +70,7 @@ class AvatarCard extends StatelessWidget {
                           blurRadius: 14,
                           spreadRadius: 0,
                           offset: const Offset(0, 8),
-                        )
+                        ),
                       ],
               ),
               child: Column(
@@ -81,10 +81,7 @@ class AvatarCard extends StatelessWidget {
                   Expanded(
                     child: Padding(
                       padding: EdgeInsets.symmetric(horizontal: 8.w),
-                      child: Image.asset(
-                        item.asset,
-                        fit: BoxFit.contain,
-                      ),
+                      child: Image.asset(item.asset, fit: BoxFit.contain),
                     ),
                   ),
 
@@ -95,15 +92,25 @@ class AvatarCard extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Container(
-                        padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 4.h),
+                        padding: EdgeInsets.symmetric(
+                          horizontal: 8.w,
+                          vertical: 4.h,
+                        ),
                         decoration: BoxDecoration(
                           color: AppColors.primary.withValues(alpha: 0.3),
                           borderRadius: BorderRadius.circular(8.r),
-                          border: Border.all(color: AppColors.primary, width: 1.5),
+                          border: Border.all(
+                            color: AppColors.primary,
+                            width: 1.5,
+                          ),
                         ),
                         child: Row(
                           children: [
-                            Icon(Icons.star, color: AppColors.accent, size: 14.sp),
+                            Icon(
+                              Icons.star,
+                              color: AppColors.accent,
+                              size: 14.sp,
+                            ),
                             WidthSpacer(4),
                             Text(
                               'Lvl ${item.level}',
@@ -117,11 +124,17 @@ class AvatarCard extends StatelessWidget {
                       ),
                       WidthSpacer(8),
                       Container(
-                        padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 4.h),
+                        padding: EdgeInsets.symmetric(
+                          horizontal: 8.w,
+                          vertical: 4.h,
+                        ),
                         decoration: BoxDecoration(
                           color: AppColors.indigo.withValues(alpha: 0.3),
                           borderRadius: BorderRadius.circular(8.r),
-                          border: Border.all(color: AppColors.indigo, width: 1.5),
+                          border: Border.all(
+                            color: AppColors.indigo,
+                            width: 1.5,
+                          ),
                         ),
                         child: Text(
                           '${item.currentXP} XP',
@@ -138,13 +151,18 @@ class AvatarCard extends StatelessWidget {
 
                   // Name plate inside card
                   Container(
-                    padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 8.h),
+                    padding: EdgeInsets.symmetric(
+                      horizontal: 12.w,
+                      vertical: 8.h,
+                    ),
                     margin: EdgeInsets.only(bottom: 6.h),
                     decoration: BoxDecoration(
                       color: AppColors.primaryTint50.withValues(alpha: 0.18),
                       borderRadius: BorderRadius.circular(10.r),
                       border: Border.all(
-                        color: selected ? AppColors.primaryTint70 : AppColors.border,
+                        color: selected
+                            ? AppColors.primaryTint70
+                            : AppColors.border,
                         width: 1.2,
                       ),
                     ),
@@ -159,7 +177,11 @@ class AvatarCard extends StatelessWidget {
                   // Description (if exists)
                   if (item.description != null && item.description!.isNotEmpty)
                     Padding(
-                      padding: EdgeInsets.only(bottom: 8.h, left: 12.w, right: 12.w),
+                      padding: EdgeInsets.only(
+                        bottom: 8.h,
+                        left: 12.w,
+                        right: 12.w,
+                      ),
                       child: Text(
                         item.description!,
                         style: AppTextStyles.bodyS.copyWith(

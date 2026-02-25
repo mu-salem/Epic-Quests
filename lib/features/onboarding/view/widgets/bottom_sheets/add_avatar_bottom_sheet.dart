@@ -17,7 +17,12 @@ class AddAvatarBottomSheet extends StatefulWidget {
   });
 
   final List<AvatarTemplate> templates;
-  final Function(AvatarTemplate template, String? customName, String? description) onCreateAvatar;
+  final Function(
+    AvatarTemplate template,
+    String? customName,
+    String? description,
+  )
+  onCreateAvatar;
 
   @override
   State<AddAvatarBottomSheet> createState() => _AddAvatarBottomSheetState();
@@ -54,121 +59,141 @@ class _AddAvatarBottomSheetState extends State<AddAvatarBottomSheet> {
     final selectedTemplate = widget.templates[_selectedTemplateIndex];
     final bottomPadding = MediaQuery.of(context).viewInsets.bottom;
     final bottomSafeArea = MediaQuery.of(context).padding.bottom;
-    final screenHeight = MediaQuery.of(context).size.height;
 
-    return Container(
-      constraints: BoxConstraints(
-        maxHeight: screenHeight * 0.85,
-      ),
-      decoration: BoxDecoration(
-        color: AppColors.backgroundDark,
-        borderRadius: BorderRadius.only(
-          topLeft: Radius.circular(24.r),
-          topRight: Radius.circular(24.r),
-        ),
-        border: Border.all(color: AppColors.border, width: 2),
-      ),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          // Header
-          Container(
-            padding: EdgeInsets.all(20.w),
-            decoration: BoxDecoration(
-              border: Border(
-                bottom: BorderSide(color: AppColors.border, width: 2),
-              ),
+    return DraggableScrollableSheet(
+      initialChildSize: 0.6,
+      minChildSize: 0.4,
+      maxChildSize: 0.95,
+      expand: false,
+      builder: (context, scrollController) {
+        return Container(
+          decoration: BoxDecoration(
+            color: AppColors.backgroundDark,
+            borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(24.r),
+              topRight: Radius.circular(24.r),
             ),
-            child: Row(
-              children: [
-                Text(
-                  'CREATE NEW AVATAR',
-                  style: AppTextStyles.h3.copyWith(color: AppColors.accent),
-                ),
-                const Spacer(),
-                GestureDetector(
-                  onTap: () => Navigator.of(context).pop(),
-                  child: Icon(
-                    Icons.close,
-                    color: AppColors.textSecondary,
-                    size: 24.sp,
+            border: Border.all(color: AppColors.border, width: 2),
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              // Header
+              Container(
+                padding: EdgeInsets.all(20.w),
+                decoration: BoxDecoration(
+                  border: Border(
+                    bottom: BorderSide(color: AppColors.border, width: 2),
                   ),
                 ),
-              ],
-            ),
-          ),
-
-          Expanded(
-            child: SingleChildScrollView(
-              padding: EdgeInsets.only(
-                left: 20.w,
-                right: 20.w,
-                top: 20.h,
-                bottom: 20.h + bottomPadding + bottomSafeArea,
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  // Template Selection Label
-                  Text(
-                    'SELECT CHARACTER',
-                    style: AppTextStyles.bodyS.copyWith(
-                      color: AppColors.accent,
-                      fontWeight: FontWeight.bold,
+                child: Row(
+                  children: [
+                    Text(
+                      'CREATE NEW AVATAR',
+                      style: AppTextStyles.h3.copyWith(color: AppColors.accent),
                     ),
-                  ),
-                  HeightSpacer(12),
-
-                  // Template Grid
-                  AvatarTemplateGrid(
-                    templates: widget.templates,
-                    selectedIndex: _selectedTemplateIndex,
-                    onTemplateSelected: (index) {
-                      setState(() {
-                        _selectedTemplateIndex = index;
-                      });
-                    },
-                  ),
-
-                  HeightSpacer(24),
-
-                  // Custom Name Section
-                  AvatarNameSection(
-                    useCustomName: _useCustomName,
-                    onUseCustomNameChanged: (value) {
-                      setState(() {
-                        _useCustomName = value;
-                      });
-                    },
-                    nameController: _nameController,
-                    defaultName: selectedTemplate.name,
-                  ),
-
-                  HeightSpacer(20),
-
-                  // Description Field
-                  AvatarDescriptionField(
-                    controller: _descriptionController,
-                  ),
-
-                  HeightSpacer(24),
-
-                  // Create Button
-                  PrimaryButton(
-                    text: 'CREATE AVATAR',
-                    width: double.infinity,
-                    onPressed: _handleCreate,
-                    backgroundColor: AppColors.panelLight,
-                    borderColor: AppColors.accent,
-                    shadowColor: AppColors.accent,
-                    textColor: AppColors.backgroundDark,
-                  ),
-                ],
+                    const Spacer(),
+                    GestureDetector(
+                      onTap: () => Navigator.of(context).pop(),
+                      child: Icon(
+                        Icons.close,
+                        color: AppColors.textSecondary,
+                        size: 24.sp,
+                      ),
+                    ),
+                  ],
+                ),
               ),
-            ),
+
+              Expanded(
+                child: SingleChildScrollView(
+                  controller: scrollController,
+                  physics: const AlwaysScrollableScrollPhysics(),
+                  padding: EdgeInsets.only(
+                    left: 20.w,
+                    right: 20.w,
+                    top: 20.h,
+                    bottom: 20.h,
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      // Template Selection Label
+                      Text(
+                        'SELECT CHARACTER',
+                        style: AppTextStyles.bodyS.copyWith(
+                          color: AppColors.accent,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      HeightSpacer(12),
+
+                      // Template Grid
+                      AvatarTemplateGrid(
+                        templates: widget.templates,
+                        selectedIndex: _selectedTemplateIndex,
+                        onTemplateSelected: (index) {
+                          setState(() {
+                            _selectedTemplateIndex = index;
+                          });
+                        },
+                      ),
+
+                      HeightSpacer(24),
+
+                      // Custom Name Section
+                      AvatarNameSection(
+                        useCustomName: _useCustomName,
+                        onUseCustomNameChanged: (value) {
+                          setState(() {
+                            _useCustomName = value;
+                          });
+                        },
+                        nameController: _nameController,
+                        defaultName: selectedTemplate.name,
+                      ),
+
+                      HeightSpacer(20),
+
+                      // Description Field
+                      AvatarDescriptionField(
+                        controller: _descriptionController,
+                      ),
+
+                      HeightSpacer(24),
+                    ],
+                  ),
+                ),
+              ),
+
+              // Fixed Action Area
+              Container(
+                padding: EdgeInsets.only(
+                  left: 20.w,
+                  right: 20.w,
+                  top: 10.h,
+                  bottom: 20.h + bottomPadding + bottomSafeArea,
+                ),
+                decoration: BoxDecoration(
+                  color: AppColors.backgroundDark,
+                  border: Border(
+                    top: BorderSide(color: AppColors.border, width: 2),
+                  ),
+                ),
+                child: PrimaryButton(
+                  text: 'CREATE AVATAR',
+                  width: double.infinity,
+                  onPressed: _handleCreate,
+                  backgroundColor: AppColors.panelLight,
+                  borderColor: AppColors.accent,
+                  shadowColor: AppColors.accent,
+                  textColor: AppColors.backgroundDark,
+                ),
+              ),
+            ],
           ),
-        ],
-      ),
+        );
+      },
     );
   }
 }

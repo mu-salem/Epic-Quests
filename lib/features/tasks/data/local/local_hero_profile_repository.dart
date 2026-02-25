@@ -1,60 +1,90 @@
+import 'package:hive/hive.dart';
+import 'package:flutter/foundation.dart';
 import '../../../../core/constants/storage_keys.dart';
-import '../../../../core/services/local_storage_service.dart';
+import '../../../../core/storage/preferences/local_storage_service.dart';
+import '../../../../core/storage/hive/hive_service.dart';
+import '../../../../core/storage/hive/hive_boxes.dart';
 import '../../model/hero_profile.dart';
 import '../repositories/hero_profile_repository.dart';
 
-
 class LocalHeroProfileRepository implements HeroProfileRepository {
+  /// Get the Hive box for hero profiles
+  Box<HeroProfile> get _heroBox =>
+      HiveService.getTypedBox<HeroProfile>(HiveBoxes.heroProfiles);
+
   @override
   Future<HeroProfile?> loadHeroProfile(String heroName) async {
-    final profileJson = LocalStorageService.getJson(StorageKeys.heroProfile(heroName));
-    if (profileJson != null) {
-      return HeroProfile.fromJson(profileJson);
+    // heroName parameter can actually be heroId or heroName
+    // Try to load by the provided key (works for both)
+    debugPrint('📖 [LocalRepo] Attempting to load hero with key: $heroName');
+    final hero = _heroBox.get(heroName);
+
+    if (hero != null) {
+      debugPrint('✅ [LocalRepo] Hero found: ${hero.name} (ID: ${hero.id})');
+    } else {
+      debugPrint('❌ [LocalRepo] No hero found with key: $heroName');
+      debugPrint(
+        '📊 [LocalRepo] Available keys in box: ${_heroBox.keys.toList()}',
+      );
     }
-    return null;
+
+    return hero;
   }
 
   @override
-  Future<void> saveHeroProfile(HeroProfile profile) async {
-    await LocalStorageService.setJson(
-      StorageKeys.heroProfile(profile.id), // Use id instead of name
-      profile.toJson(),
+  Future<HeroProfile> saveHeroProfile(HeroProfile profile) async {
+    debugPrint(
+      '💾 [LocalRepo] Saving hero: ${profile.name} (ID: ${profile.id})',
     );
+    debugPrint('💾 [LocalRepo] Using key: ${profile.id}');
+    debugPrint('💾 [LocalRepo] Quests count: ${profile.quests.length}');
+
+    // Use hero ID as key for easy retrieval
+    await _heroBox.put(profile.id, profile);
+    debugPrint('✅ [LocalRepo] Hero saved to Hive');
+
+    // Verify save
+    final saved = _heroBox.get(profile.id);
+    if (saved != null) {
+      debugPrint(
+        '✅ [LocalRepo] Verification: Hero exists in Hive with ID: ${profile.id}',
+      );
+      debugPrint('✅ [LocalRepo] Verified quests count: ${saved.quests.length}');
+    } else {
+      debugPrint('❌ [LocalRepo] Verification FAILED: Hero NOT in Hive!');
+    }
+
+    return profile;
   }
 
   @override
   Future<void> deleteHeroProfile(String heroName) async {
-    await LocalStorageService.remove(StorageKeys.heroProfile(heroName));
+    await _heroBox.delete(heroName);
   }
 
   @override
   Future<bool> hasHeroProfile(String heroName) async {
-    final profileJson = LocalStorageService.getJson(StorageKeys.heroProfile(heroName));
-    return profileJson != null;
+    return _heroBox.containsKey(heroName);
   }
 
   @override
   Future<String?> getLastSelectedHero() async {
-    return LocalStorageService.getString(StorageKeys.lastSelectedHero);
+    final heroId = LocalStorageService.getString(StorageKeys.lastSelectedHero);
+    debugPrint('📌 [LocalRepo] Last selected hero: $heroId');
+    return heroId;
   }
 
   @override
   Future<void> setLastSelectedHero(String heroName) async {
+    debugPrint('📌 [LocalRepo] Setting last selected hero: $heroName');
     await LocalStorageService.setString(StorageKeys.lastSelectedHero, heroName);
+    debugPrint('✅ [LocalRepo] Last selected hero saved');
   }
 
   @override
   Future<List<String>> listAllHeroes() async {
-    // Get all keys from shared preferences
-    final allKeys = LocalStorageService.getAllKeys();
-    
-    // Filter keys that start with "hero_" prefix
-    final heroKeys = allKeys.where((key) => key.startsWith('hero_')).toList();
-    
-    // Extract hero names from keys (remove "hero_" prefix)
-    final heroNames = heroKeys.map((key) => key.substring(5)).toList();
-    
-    return heroNames;
+    final keys = _heroBox.keys.cast<String>().toList();
+    debugPrint('📊 [LocalRepo] Total heroes in Hive: ${keys.length}');
+    return keys;
   }
 }
-

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-
+import '../../../../../core/resources/app_icons.dart';
 import '../../../../../core/theme/app_colors.dart';
 import '../../../../../core/theme/app_text_styles.dart';
 import '../../../../../core/widgets/spacing_widgets.dart';
@@ -24,9 +24,7 @@ class QuestPrioritySelector extends StatelessWidget {
       children: [
         Text(
           'Priority',
-          style: AppTextStyles.bodyM.copyWith(
-            color: AppColors.textSecondary,
-          ),
+          style: AppTextStyles.bodyM.copyWith(color: AppColors.textSecondary),
         ),
         HeightSpacer(8),
         Row(
@@ -41,21 +39,20 @@ class QuestPrioritySelector extends StatelessWidget {
                   ),
                   padding: EdgeInsets.symmetric(vertical: 10.h),
                   decoration: BoxDecoration(
-                    color: isSelected ? AppColors.primary : AppColors.panelDark,
+                    color: isSelected
+                        ? AppColors.primary.withValues(alpha: 0.15)
+                        : AppColors.panelDark,
                     borderRadius: BorderRadius.circular(8.r),
                     border: Border.all(
-                      color: isSelected 
-                          ? AppColors.primaryTint70 
+                      color: isSelected
+                          ? AppColors.primaryTint70
                           : AppColors.border,
                       width: 2,
                     ),
                   ),
                   child: Column(
                     children: [
-                      Text(
-                        priority.icon,
-                        style: TextStyle(fontSize: 20.sp),
-                      ),
+                      _getPriorityIcon(priority, width: 24.w, height: 24.h),
                       HeightSpacer(4),
                       Text(
                         priority.label,
@@ -75,5 +72,21 @@ class QuestPrioritySelector extends StatelessWidget {
         ),
       ],
     );
+  }
+
+  /// Helper to get the equivalent priority AppIcon
+  Widget _getPriorityIcon(
+    QuestPriority priority, {
+    double? width,
+    double? height,
+  }) {
+    switch (priority) {
+      case QuestPriority.low:
+        return AppIcons.lowPriority(width: width, height: height);
+      case QuestPriority.medium:
+        return AppIcons.mediumPriority(width: width, height: height);
+      case QuestPriority.high:
+        return AppIcons.highPriority(width: width, height: height);
+    }
   }
 }

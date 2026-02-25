@@ -4,14 +4,12 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:epicquests/core/theme/app_colors.dart';
 import 'package:epicquests/core/theme/app_text_styles.dart';
 import 'package:epicquests/core/widgets/widgets.dart';
+
 /// Preview card showing avatar image, name, level and XP
 class AvatarPreviewCard extends StatelessWidget {
   final AvatarItem avatar;
 
-  const AvatarPreviewCard({
-    super.key,
-    required this.avatar,
-  });
+  const AvatarPreviewCard({super.key, required this.avatar});
 
   @override
   Widget build(BuildContext context) {
@@ -28,10 +26,7 @@ class AvatarPreviewCard extends StatelessWidget {
               borderRadius: BorderRadius.circular(16.r),
               border: Border.all(color: AppColors.accent, width: 2),
             ),
-            child: Image.asset(
-              avatar.asset,
-              fit: BoxFit.contain,
-            ),
+            child: Image.asset(avatar.asset, fit: BoxFit.contain),
           ),
         ),
 

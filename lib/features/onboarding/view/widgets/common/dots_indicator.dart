@@ -3,11 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class DotsIndicator extends StatelessWidget {
-  const DotsIndicator({
-    super.key,
-    required this.count,
-    required this.index,
-  });
+  const DotsIndicator({super.key, required this.count, required this.index});
 
   final int count;
   final int index;

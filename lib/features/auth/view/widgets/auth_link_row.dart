@@ -24,9 +24,7 @@ class AuthLinkRow extends StatelessWidget {
       children: [
         Text(
           text,
-          style: AppTextStyles.bodyS.copyWith(
-            color: AppColors.textSecondary,
-          ),
+          style: AppTextStyles.bodyS.copyWith(color: AppColors.textSecondary),
         ),
         WidthSpacer(6),
         GestureDetector(

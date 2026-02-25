@@ -6,7 +6,6 @@ import '../../../../core/routing/app_router.dart';
 import '../../../../core/widgets/spacing_widgets.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/widgets/primary_button.dart';
-import '../../../../core/widgets/error_message_box.dart';
 import '../../viewmodel/register_viewmodel.dart';
 import '../widgets/auth_link_row.dart';
 import '../widgets/auth_scaffold.dart';
@@ -22,14 +21,18 @@ class RegisterScreen extends StatefulWidget {
 
 class _RegisterScreenState extends State<RegisterScreen> {
   late RegisterViewModel _viewModel;
+  final _usernameController = TextEditingController();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
-  final _confirmPasswordController = TextEditingController();
 
   @override
   void initState() {
     super.initState();
     _viewModel = RegisterViewModel();
+
+    _usernameController.addListener(() {
+      _viewModel.updateUsername(_usernameController.text);
+    });
 
     _emailController.addListener(() {
       _viewModel.updateEmail(_emailController.text);
@@ -38,18 +41,14 @@ class _RegisterScreenState extends State<RegisterScreen> {
     _passwordController.addListener(() {
       _viewModel.updatePassword(_passwordController.text);
     });
-
-    _confirmPasswordController.addListener(() {
-      _viewModel.updateConfirmPassword(_confirmPasswordController.text);
-    });
   }
 
   @override
   void dispose() {
     _viewModel.dispose();
+    _usernameController.dispose();
     _emailController.dispose();
     _passwordController.dispose();
-    _confirmPasswordController.dispose();
     super.dispose();
   }
 
@@ -57,8 +56,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
     final success = await _viewModel.register();
 
     if (success && mounted) {
-      // Navigate to avatar selection
-      context.go(AppRouter.onboardingAvatar);
+      // Navigate to email verification screen passing the email
+      final userEmail = _emailController.text;
+      context.go('${AppRouter.verifyEmail}?email=$userEmail');
     }
   }
 
@@ -80,6 +80,18 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 ),
 
                 HeightSpacer(40),
+
+                // Username field
+                AuthTextField(
+                  controller: _usernameController,
+                  label: 'USERNAME',
+                  hint: 'epic_hero',
+                  keyboardType: TextInputType.text,
+                  errorText: viewModel.usernameError,
+                  enabled: !viewModel.isLoading,
+                ),
+
+                HeightSpacer(20),
 
                 // Email field
                 AuthTextField(
@@ -103,25 +115,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   enabled: !viewModel.isLoading,
                 ),
 
-                HeightSpacer(20),
-
-                // Confirm password field
-                AuthTextField(
-                  controller: _confirmPasswordController,
-                  label: 'CONFIRM PASSWORD',
-                  hint: '••••••••',
-                  obscureText: true,
-                  errorText: viewModel.confirmPasswordError,
-                  enabled: !viewModel.isLoading,
-                ),
-
                 HeightSpacer(32),
-
-                // Error message
-                if (viewModel.errorMessage != null) ...[  
-                  ErrorMessageBox(message: viewModel.errorMessage!),
-                  HeightSpacer(16),
-                ],
 
                 // Register button
                 PrimaryButton(

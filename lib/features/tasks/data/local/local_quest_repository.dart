@@ -1,55 +1,41 @@
-import 'dart:convert';
-import '../../../../core/services/local_storage_service.dart';
+import 'package:hive/hive.dart';
+import '../../../../core/storage/hive/hive_service.dart';
+import '../../../../core/storage/hive/hive_boxes.dart';
 import '../../model/quest.dart';
 import '../repositories/quest_repository.dart';
 
 class LocalQuestRepository implements QuestRepository {
-  static const String _questsKey = 'quests';
+  /// Get the Hive box for quests
+  Box<Quest> get _questBox => HiveService.getTypedBox<Quest>(HiveBoxes.quests);
 
   @override
   Future<List<Quest>> getQuests() async {
-    final jsonString = LocalStorageService.getString(_questsKey);
-    if (jsonString == null || jsonString.isEmpty) {
-      return [];
-    }
-
-    try {
-      final List<dynamic> jsonList = json.decode(jsonString);
-      return jsonList.map((json) => Quest.fromJson(json)).toList();
-    } catch (e) {
-      // If there's an error parsing, return empty list
-      return [];
-    }
+    return _questBox.values.toList();
   }
 
   @override
-  Future<void> addQuest(Quest quest) async {
-    final quests = await getQuests();
-    quests.insert(0, quest);
-    await saveQuests(quests);
+  Future<Quest> addQuest(Quest quest, String heroId) async {
+    // Use quest.id as the key for easy retrieval and updates
+    await _questBox.put(quest.id, quest);
+    return quest;
   }
 
   @override
   Future<void> updateQuest(Quest quest) async {
-    final quests = await getQuests();
-    final index = quests.indexWhere((q) => q.id == quest.id);
-    if (index != -1) {
-      quests[index] = quest;
-      await saveQuests(quests);
-    }
+    // Same as addQuest - put will overwrite if key exists
+    await _questBox.put(quest.id, quest);
   }
 
   @override
   Future<void> deleteQuest(String questId) async {
-    final quests = await getQuests();
-    quests.removeWhere((q) => q.id == questId);
-    await saveQuests(quests);
+    await _questBox.delete(questId);
   }
 
   @override
   Future<void> saveQuests(List<Quest> quests) async {
-    final jsonList = quests.map((quest) => quest.toJson()).toList();
-    final jsonString = json.encode(jsonList);
-    await LocalStorageService.setString(_questsKey, jsonString);
+    // Clear existing and save all
+    await _questBox.clear();
+    final questMap = {for (var quest in quests) quest.id: quest};
+    await _questBox.putAll(questMap);
   }
 }

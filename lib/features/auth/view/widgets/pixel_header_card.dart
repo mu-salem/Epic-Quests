@@ -24,10 +24,7 @@ class PixelHeaderCard extends StatelessWidget {
       decoration: BoxDecoration(
         color: AppColors.panelDark,
         borderRadius: BorderRadius.circular(8.r),
-        border: Border.all(
-          color: AppColors.border,
-          width: 2,
-        ),
+        border: Border.all(color: AppColors.border, width: 2),
         boxShadow: [
           BoxShadow(
             color: AppColors.primary.withValues(alpha: 0.2),
@@ -50,9 +47,7 @@ class PixelHeaderCard extends StatelessWidget {
           HeightSpacer(12),
           Text(
             subtitle,
-            style: AppTextStyles.bodyM.copyWith(
-              color: AppColors.textSecondary,
-            ),
+            style: AppTextStyles.bodyM.copyWith(color: AppColors.textSecondary),
             textAlign: TextAlign.center,
           ),
         ],

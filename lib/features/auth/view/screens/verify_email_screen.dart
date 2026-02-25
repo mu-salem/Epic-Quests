@@ -1,0 +1,141 @@
+import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import 'package:provider/provider.dart';
+
+import '../../../../core/routing/app_router.dart';
+import '../../../../core/widgets/spacing_widgets.dart';
+import '../../../../core/theme/app_colors.dart';
+import '../../../../core/widgets/primary_button.dart';
+import '../../../../core/widgets/error_message_box.dart';
+import '../../viewmodel/verify_email_viewmodel.dart';
+import '../widgets/auth_scaffold.dart';
+import '../widgets/otp_code_boxes.dart';
+import '../widgets/pixel_header_card.dart';
+
+class VerifyEmailScreen extends StatefulWidget {
+  const VerifyEmailScreen({super.key, required this.email});
+
+  final String email;
+
+  @override
+  State<VerifyEmailScreen> createState() => _VerifyEmailScreenState();
+}
+
+class _VerifyEmailScreenState extends State<VerifyEmailScreen> {
+  late VerifyEmailViewModel _viewModel;
+
+  @override
+  void initState() {
+    super.initState();
+    _viewModel = VerifyEmailViewModel();
+    // Initialize the viewmodel with the email passed from registration screen
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _viewModel.setEmail(widget.email);
+    });
+  }
+
+  @override
+  void dispose() {
+    _viewModel.dispose();
+    super.dispose();
+  }
+
+  Future<void> _handleVerifyEmail() async {
+    final success = await _viewModel.verifyEmail();
+
+    if (success && mounted) {
+      // After successfully verifying email, go back to login screen with a success message
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Account verified successfully! Please login.'),
+          backgroundColor: AppColors.success,
+        ),
+      );
+      context.go(AppRouter.login);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return ChangeNotifierProvider.value(
+      value: _viewModel,
+      child: AuthScaffold(
+        body: Consumer<VerifyEmailViewModel>(
+          builder: (context, viewModel, child) {
+            return Column(
+              children: [
+                HeightSpacer(40),
+
+                // Back button
+                Align(
+                  alignment: Alignment.centerLeft,
+                  child: IconButton(
+                    onPressed: viewModel.isLoading ? null : () => context.pop(),
+                    icon: const Icon(
+                      Icons.arrow_back,
+                      color: AppColors.textPrimary,
+                    ),
+                  ),
+                ),
+
+                HeightSpacer(20),
+
+                // Header
+                const PixelHeaderCard(
+                  title: 'VERIFY EMAIL',
+                  subtitle: 'Enter the magic code sent to your scroll',
+                ),
+
+                HeightSpacer(40),
+                Text(
+                  widget.email,
+                  style: const TextStyle(
+                    color: AppColors.accent,
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                HeightSpacer(30),
+
+                // Code boxes
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  child: OtpCodeBoxes(
+                    length: 6,
+                    enabled: !viewModel.isLoading,
+                    hasError: viewModel.errorMessage != null,
+                    onChanged: (code) {
+                      _viewModel.updateCode(code);
+                    },
+                  ),
+                ),
+
+                HeightSpacer(32),
+
+                // Error message
+                if (viewModel.errorMessage != null) ...[
+                  ErrorMessageBox(message: viewModel.errorMessage!),
+                  HeightSpacer(16),
+                ],
+
+                // Verify button
+                PrimaryButton(
+                  onPressed: viewModel.isLoading ? null : _handleVerifyEmail,
+                  text: 'VERIFY',
+                  isLoading: viewModel.isLoading,
+                  backgroundColor: AppColors.panelLight,
+                  borderColor: AppColors.accent,
+                  shadowColor: AppColors.accent,
+                  textColor: AppColors.backgroundDark,
+                  width: double.infinity,
+                ),
+
+                HeightSpacer(20),
+              ],
+            );
+          },
+        ),
+      ),
+    );
+  }
+}

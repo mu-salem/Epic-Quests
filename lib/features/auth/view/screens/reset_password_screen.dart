@@ -106,7 +106,7 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                 HeightSpacer(32),
 
                 // Error message
-                if (viewModel.errorMessage != null) ...[  
+                if (viewModel.errorMessage != null) ...[
                   ErrorMessageBox(message: viewModel.errorMessage!),
                   HeightSpacer(16),
                 ],

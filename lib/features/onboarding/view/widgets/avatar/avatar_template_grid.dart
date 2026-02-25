@@ -31,67 +31,68 @@ class AvatarTemplateGrid extends StatelessWidget {
         return Wrap(
           spacing: spacing,
           runSpacing: 12.h,
-          children: List.generate(
-            templates.length,
-            (index) {
-              final template = templates[index];
-              final isSelected = index == selectedIndex;
+          children: List.generate(templates.length, (index) {
+            final template = templates[index];
+            final isSelected = index == selectedIndex;
 
-              return GestureDetector(
-                onTap: () => onTemplateSelected(index),
-                child: Container(
-                  width: cardWidth,
-                  height: cardHeight,
-                  decoration: BoxDecoration(
-                    color: AppColors.panelDark,
-                    borderRadius: BorderRadius.circular(12.r),
-                    border: Border.all(
-                      color: isSelected ? AppColors.accent : AppColors.border,
-                      width: isSelected ? 3 : 2,
-                    ),
-                    boxShadow: isSelected
-                        ? [
-                            BoxShadow(
-                              color: AppColors.accent.withValues(alpha: 0.3),
-                              blurRadius: 12,
-                              spreadRadius: 2,
-                            ),
-                          ]
-                        : null,
+            return GestureDetector(
+              onTap: () => onTemplateSelected(index),
+              child: Container(
+                width: cardWidth,
+                height: cardHeight,
+                decoration: BoxDecoration(
+                  color: AppColors.panelDark,
+                  borderRadius: BorderRadius.circular(12.r),
+                  border: Border.all(
+                    color: isSelected ? AppColors.accent : AppColors.border,
+                    width: isSelected ? 3 : 2,
                   ),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Expanded(
-                        child: Padding(
-                          padding: EdgeInsets.all(8.w),
-                          child: Image.asset(
-                            template.asset,
-                            fit: BoxFit.contain,
+                  boxShadow: isSelected
+                      ? [
+                          BoxShadow(
+                            color: AppColors.accent.withValues(alpha: 0.3),
+                            blurRadius: 12,
+                            spreadRadius: 2,
                           ),
-                        ),
-                      ),
-                      HeightSpacer(4),
-                      Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 4.w, vertical: 6.h),
-                        child: Text(
-                          template.name,
-                          style: AppTextStyles.bodyS.copyWith(
-                            color: isSelected ? AppColors.accent : AppColors.textPrimary,
-                            fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
-                            fontSize: 16.sp,
-                          ),
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                          textAlign: TextAlign.center,
-                        ),
-                      ),
-                    ],
-                  ),
+                        ]
+                      : null,
                 ),
-              );
-            },
-          ),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Expanded(
+                      child: Padding(
+                        padding: EdgeInsets.all(8.w),
+                        child: Image.asset(template.asset, fit: BoxFit.contain),
+                      ),
+                    ),
+                    HeightSpacer(4),
+                    Padding(
+                      padding: EdgeInsets.symmetric(
+                        horizontal: 4.w,
+                        vertical: 6.h,
+                      ),
+                      child: Text(
+                        template.name,
+                        style: AppTextStyles.bodyS.copyWith(
+                          color: isSelected
+                              ? AppColors.accent
+                              : AppColors.textPrimary,
+                          fontWeight: isSelected
+                              ? FontWeight.bold
+                              : FontWeight.normal,
+                          fontSize: 16.sp,
+                        ),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            );
+          }),
         );
       },
     );

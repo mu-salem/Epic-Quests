@@ -1,15 +1,50 @@
+import 'package:hive/hive.dart';
 import '../../../core/services/xp_service.dart';
 import 'quest.dart';
+import 'recurring_quest.dart';
 
+part 'hero_profile.g.dart';
 
+@HiveType(typeId: 0)
 class HeroProfile {
-  final String id; // Unique identifier for the hero
+  @HiveField(0)
+  final String id;
+
+  @HiveField(1)
   final String name;
+
+  @HiveField(2)
   final String avatarAsset;
-  final String gender; 
+
+  @HiveField(3)
+  final String gender;
+
+  @HiveField(4)
   final int level;
+
+  @HiveField(5)
   final int currentXP;
+
+  @HiveField(6)
   final List<Quest> quests;
+
+  @HiveField(7)
+  final int currentStreak; // consecutive days with at least one completed quest
+
+  @HiveField(8)
+  final int longestStreak;
+
+  @HiveField(9)
+  final int totalCompletedQuests;
+
+  @HiveField(10)
+  final DateTime createdAt;
+
+  @HiveField(11)
+  final DateTime? lastActivityDate;
+
+  @HiveField(12)
+  final List<RecurringQuest> recurringQuests;
 
   HeroProfile({
     required this.id,
@@ -19,45 +54,72 @@ class HeroProfile {
     this.level = 1,
     this.currentXP = 0,
     this.quests = const [],
-  });
+    this.currentStreak = 0,
+    this.longestStreak = 0,
+    this.totalCompletedQuests = 0,
+    DateTime? createdAt,
+    this.lastActivityDate,
+    this.recurringQuests = const [],
+  }) : createdAt = createdAt ?? DateTime.now();
 
-  /// Calculate XP needed for current level
   int get maxXP => XPService.calculateMaxXP(level);
 
-  /// Calculate XP gain based on quest priority
   static int calculateXPGain(QuestPriority priority) {
     return XPService.calculateXPGain(priority);
   }
 
-  /// Add XP and handle level up
   HeroProfile addXP(int xp) {
     final result = XPService.addXP(
       currentLevel: level,
       currentXP: currentXP,
       xpToAdd: xp,
     );
-
-    return copyWith(
-      level: result['level']!,
-      currentXP: result['currentXP']!,
-    );
+    return copyWith(level: result['level']!, currentXP: result['currentXP']!);
   }
 
-  /// Remove XP from hero (delegates to XPService)
   HeroProfile removeXP(int xp) {
     final result = XPService.removeXP(
       currentLevel: level,
       currentXP: currentXP,
       xpToRemove: xp,
     );
+    return copyWith(level: result['level']!, currentXP: result['currentXP']!);
+  }
+
+  /// Update streak when a quest is completed
+  HeroProfile recordQuestCompletion() {
+    final now = DateTime.now();
+    final today = DateTime(now.year, now.month, now.day);
+    int newStreak = currentStreak;
+
+    if (lastActivityDate != null) {
+      final lastDay = DateTime(
+        lastActivityDate!.year,
+        lastActivityDate!.month,
+        lastActivityDate!.day,
+      );
+      final diff = today.difference(lastDay).inDays;
+      if (diff == 0) {
+        // Same day, no streak change
+      } else if (diff == 1) {
+        // Consecutive day
+        newStreak++;
+      } else {
+        // Streak broken
+        newStreak = 1;
+      }
+    } else {
+      newStreak = 1;
+    }
 
     return copyWith(
-      level: result['level']!,
-      currentXP: result['currentXP']!,
+      currentStreak: newStreak,
+      longestStreak: newStreak > longestStreak ? newStreak : longestStreak,
+      totalCompletedQuests: totalCompletedQuests + 1,
+      lastActivityDate: now,
     );
   }
 
-  /// Copy with method
   HeroProfile copyWith({
     String? id,
     String? name,
@@ -66,6 +128,12 @@ class HeroProfile {
     int? level,
     int? currentXP,
     List<Quest>? quests,
+    int? currentStreak,
+    int? longestStreak,
+    int? totalCompletedQuests,
+    DateTime? createdAt,
+    DateTime? lastActivityDate,
+    List<RecurringQuest>? recurringQuests,
   }) {
     return HeroProfile(
       id: id ?? this.id,
@@ -75,33 +143,92 @@ class HeroProfile {
       level: level ?? this.level,
       currentXP: currentXP ?? this.currentXP,
       quests: quests ?? this.quests,
+      currentStreak: currentStreak ?? this.currentStreak,
+      longestStreak: longestStreak ?? this.longestStreak,
+      totalCompletedQuests: totalCompletedQuests ?? this.totalCompletedQuests,
+      createdAt: createdAt ?? this.createdAt,
+      lastActivityDate: lastActivityDate ?? this.lastActivityDate,
+      recurringQuests: recurringQuests ?? this.recurringQuests,
     );
   }
 
-  /// Convert to JSON
   Map<String, dynamic> toJson() {
     return {
       'id': id,
       'name': name,
-      'avatarAsset': avatarAsset,
+      'avatar': avatarAsset,
       'gender': gender,
       'level': level,
-      'currentXP': currentXP,
+      'xp': currentXP,
       'quests': quests.map((q) => q.toJson()).toList(),
+      'current_streak': currentStreak,
+      'longest_streak': longestStreak,
+      'total_completed_quests': totalCompletedQuests,
+      'created_at': createdAt.toIso8601String(),
+      'last_activity_date': lastActivityDate?.toIso8601String(),
+      'recurring_quests': recurringQuests.map((q) => q.toJson()).toList(),
     };
   }
 
-  /// Create from JSON
+  /// Strictly mapped payload for backend POST /heroes (Matches CreateHeroDto)
+  Map<String, dynamic> toCreateJson() {
+    return {
+      'id': id,
+      'name': name,
+      'avatar': avatarAsset,
+      'level': level,
+      'xp': currentXP,
+      'total_quests': quests.length,
+      'completed_quests': totalCompletedQuests,
+      'streak': currentStreak,
+    };
+  }
+
+  /// Strictly mapped payload for backend PUT /heroes (Matches UpdateHeroDto)
+  Map<String, dynamic> toUpdateJson() {
+    return {
+      'name': name,
+      'level': level,
+      'xp': currentXP,
+      'completed_quests': totalCompletedQuests,
+      'streak': currentStreak,
+    };
+  }
+
   factory HeroProfile.fromJson(Map<String, dynamic> json) {
     return HeroProfile(
-      id: json['id'] as String,
+      id: (json['id'] ?? json['_id']).toString(),
       name: json['name'] as String,
-      avatarAsset: json['avatarAsset'] as String,
-      gender: json['gender'] as String,
+      avatarAsset: (json['avatarAsset'] ?? json['avatar']) as String,
+      gender: json['gender'] as String? ?? 'male',
       level: json['level'] as int? ?? 1,
-      currentXP: json['currentXP'] as int? ?? 0,
-      quests: (json['quests'] as List<dynamic>?)
+      currentXP: (json['currentXP'] ?? json['xp']) as int? ?? 0,
+      quests:
+          (json['quests'] as List<dynamic>?)
               ?.map((q) => Quest.fromJson(q as Map<String, dynamic>))
+              .toList() ??
+          [],
+      currentStreak:
+          (json['current_streak'] ?? json['currentStreak']) as int? ?? 0,
+      longestStreak:
+          (json['longest_streak'] ?? json['longestStreak']) as int? ?? 0,
+      totalCompletedQuests:
+          (json['total_completed_quests'] ?? json['totalCompletedQuests'])
+              as int? ??
+          0,
+      createdAt: (json['created_at'] ?? json['createdAt']) != null
+          ? DateTime.parse((json['created_at'] ?? json['createdAt']) as String)
+          : DateTime.now(),
+      lastActivityDate:
+          (json['last_activity_date'] ?? json['lastActivityDate']) != null
+          ? DateTime.parse(
+              (json['last_activity_date'] ?? json['lastActivityDate'])
+                  as String,
+            )
+          : null,
+      recurringQuests:
+          (json['recurring_quests'] as List<dynamic>?)
+              ?.map((q) => RecurringQuest.fromJson(q as Map<String, dynamic>))
               .toList() ??
           [],
     );

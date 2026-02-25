@@ -59,18 +59,22 @@ class PrimaryButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final bool isDisabled = onPressed == null || isLoading;
-    
+
     // Default colors
     final defaultBgColor = backgroundColor ?? AppColors.primary;
-    final defaultDisabledBgColor = disabledBackgroundColor ?? AppColors.panelDark;
+    final defaultDisabledBgColor =
+        disabledBackgroundColor ?? AppColors.panelDark;
     final defaultTextColor = textColor ?? AppColors.textPrimary;
-    final defaultBorderColor = borderColor ?? (isDisabled ? AppColors.border : AppColors.primary);
+    final defaultBorderColor =
+        borderColor ?? (isDisabled ? AppColors.border : AppColors.primary);
     final defaultBorderWidth = borderWidth ?? 3.0;
     final defaultBorderRadius = borderRadius ?? 6.r;
-    final defaultPadding = padding ?? EdgeInsets.symmetric(horizontal: 40.w, vertical: 16.h);
-    
+    final defaultPadding =
+        padding ?? EdgeInsets.symmetric(horizontal: 40.w, vertical: 16.h);
+
     // Shadow defaults
-    final defaultShadowColor = shadowColor ?? AppColors.primary..withValues(alpha: 0.3);
+    final defaultShadowColor = shadowColor ?? AppColors.primary
+      ..withValues(alpha: 0.3);
     final defaultShadowBlur = shadowBlurRadius ?? 12.0;
     final defaultShadowSpread = shadowSpreadRadius ?? 2.0;
 
@@ -113,6 +117,12 @@ class PrimaryButton extends StatelessWidget {
       child: Container(
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(defaultBorderRadius),
+          gradient: isDisabled
+              ? null
+              : (backgroundColor == null ? AppColors.mysticGradient : null),
+          color: isDisabled
+              ? defaultDisabledBgColor
+              : (backgroundColor != null ? defaultBgColor : null),
           border: Border.all(
             color: defaultBorderColor,
             width: defaultBorderWidth,
@@ -128,15 +138,25 @@ class PrimaryButton extends StatelessWidget {
               : [],
         ),
         child: ElevatedButton(
-          onPressed: isLoading ? null : onPressed,
+          onPressed: isLoading
+              ? null
+              : () {
+                  debugPrint('🔘 [PrimaryButton] Button pressed: "$text"');
+                  debugPrint('🔘 [PrimaryButton] isLoading: $isLoading');
+                  debugPrint('🔘 [PrimaryButton] isDisabled: $isDisabled');
+                  if (onPressed != null) {
+                    onPressed!();
+                  }
+                },
           style: ElevatedButton.styleFrom(
-            backgroundColor: isDisabled ? defaultDisabledBgColor : defaultBgColor,
+            backgroundColor: AppColors.transparent,
             foregroundColor: defaultTextColor,
             padding: defaultPadding,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(defaultBorderRadius),
             ),
             elevation: 0,
+            shadowColor: AppColors.transparent,
           ),
           child: buttonChild,
         ),

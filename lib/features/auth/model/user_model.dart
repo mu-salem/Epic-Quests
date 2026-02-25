@@ -12,11 +12,25 @@ class UserModel {
   });
 
   factory UserModel.fromJson(Map<String, dynamic> json) {
+    // Handle both 'id' and '_id' from backend with proper null safety
+    final id = json['id'] ?? json['_id'];
+    if (id == null) {
+      throw ArgumentError('User ID is required but was null in JSON response');
+    }
+
+    // Handle both 'createdAt' and 'created_at' from backend
+    // Use current time as fallback if not provided
+    final createdAtStr = json['createdAt'] ?? json['created_at'];
+    final createdAt = createdAtStr != null
+        ? DateTime.parse(createdAtStr as String)
+        : DateTime.now();
+
     return UserModel(
-      id: json['id'] as String,
+      id: id.toString(),
       email: json['email'] as String,
-      name: json['name'] as String?,
-      createdAt: DateTime.parse(json['createdAt'] as String),
+      // Handle both 'name' and 'username' from backend
+      name: json['name'] as String? ?? json['username'] as String?,
+      createdAt: createdAt,
     );
   }
 

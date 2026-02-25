@@ -8,10 +8,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 class AvatarDescriptionField extends StatelessWidget {
   final TextEditingController controller;
 
-  const AvatarDescriptionField({
-    super.key,
-    required this.controller,
-  });
+  const AvatarDescriptionField({super.key, required this.controller});
 
   @override
   Widget build(BuildContext context) {

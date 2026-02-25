@@ -4,7 +4,6 @@ import 'package:epicquests/core/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-
 /// Section for custom avatar name with checkbox toggle
 class AvatarNameSection extends StatelessWidget {
   final bool useCustomName;
@@ -55,7 +54,9 @@ class AvatarNameSection extends StatelessWidget {
             style: AppTextStyles.bodyM.copyWith(color: AppColors.textPrimary),
             decoration: InputDecoration(
               hintText: 'Enter avatar name',
-              hintStyle: AppTextStyles.bodyM.copyWith(color: AppColors.textMuted),
+              hintStyle: AppTextStyles.bodyM.copyWith(
+                color: AppColors.textMuted,
+              ),
               filled: true,
               fillColor: AppColors.panelDark,
               border: OutlineInputBorder(
@@ -86,7 +87,9 @@ class AvatarNameSection extends StatelessWidget {
                 WidthSpacer(8),
                 Text(
                   'Default name: $defaultName',
-                  style: AppTextStyles.bodyM.copyWith(color: AppColors.textMuted),
+                  style: AppTextStyles.bodyM.copyWith(
+                    color: AppColors.textMuted,
+                  ),
                 ),
               ],
             ),

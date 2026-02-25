@@ -1,6 +1,3 @@
-/// App Images Resources
-/// 
-/// Centralized image asset paths for the application
 class AppImages {
   AppImages._();
 

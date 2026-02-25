@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import '../../../../core/resources/app_icons.dart';
 import 'package:provider/provider.dart';
 
 import '../../../../core/theme/app_colors.dart';
@@ -10,10 +11,7 @@ import '../../viewmodel/add_quest_viewmodel.dart';
 import 'form_fields/form_fields.dart';
 
 class AddQuestBottomSheet extends StatefulWidget {
-  const AddQuestBottomSheet({
-    super.key,
-    this.questToEdit,
-  });
+  const AddQuestBottomSheet({super.key, this.questToEdit});
 
   final Quest? questToEdit;
 
@@ -29,21 +27,26 @@ class _AddQuestBottomSheetState extends State<AddQuestBottomSheet> {
   @override
   void initState() {
     super.initState();
+    debugPrint('🚀 [AddQuestSheet] initState called');
     _viewModel = AddQuestViewModel(questToEdit: widget.questToEdit);
-    
+
     // Initialize controllers from ViewModel
     _titleController.text = _viewModel.title;
     _descriptionController.text = _viewModel.description ?? '';
-    
+    debugPrint('🚀 [AddQuestSheet] Initial title: "${_titleController.text}"');
+
     // Listen to controller changes and update ViewModel
     _titleController.addListener(() {
+      debugPrint(
+        '👂 [AddQuestSheet] Title controller changed: "${_titleController.text}"',
+      );
       _viewModel.updateTitle(_titleController.text);
     });
-    
+
     _descriptionController.addListener(() {
       _viewModel.updateDescription(_descriptionController.text);
     });
-    
+
     _viewModel.addListener(_onViewModelChanged);
   }
 
@@ -88,9 +91,16 @@ class _AddQuestBottomSheetState extends State<AddQuestBottomSheet> {
   }
 
   void _saveQuest() {
+    debugPrint('💾 [AddQuestSheet] _saveQuest called');
+    debugPrint(
+      '💾 [AddQuestSheet] Controller text: "${_titleController.text}"',
+    );
     final quest = _viewModel.saveQuest();
     if (quest != null) {
+      debugPrint('✅ [AddQuestSheet] Quest saved, popping with result');
       Navigator.of(context).pop(quest);
+    } else {
+      debugPrint('❌ [AddQuestSheet] Quest validation failed, not closing');
     }
   }
 
@@ -105,15 +115,11 @@ class _AddQuestBottomSheetState extends State<AddQuestBottomSheet> {
         ),
         title: Text(
           'Delete Quest?',
-          style: AppTextStyles.h3.copyWith(
-            color: AppColors.textPrimary,
-          ),
+          style: AppTextStyles.h3.copyWith(color: AppColors.textPrimary),
         ),
         content: Text(
           'Are you sure you want to delete this quest? This action cannot be undone.',
-          style: AppTextStyles.bodyM.copyWith(
-            color: AppColors.textSecondary,
-          ),
+          style: AppTextStyles.bodyM.copyWith(color: AppColors.textSecondary),
         ),
         actions: [
           TextButton(
@@ -149,86 +155,115 @@ class _AddQuestBottomSheetState extends State<AddQuestBottomSheet> {
   Widget build(BuildContext context) {
     return ChangeNotifierProvider.value(
       value: _viewModel,
-      child: Container(
-        decoration: BoxDecoration(
-          color: AppColors.backgroundDark,
-          borderRadius: BorderRadius.vertical(top: Radius.circular(20.r)),
-        ),
-        padding: EdgeInsets.only(
-          left: 20.w,
-          right: 20.w,
-          top: 20.h,
-          bottom: MediaQuery.of(context).viewInsets.bottom + 
-                  MediaQuery.of(context).padding.bottom + 20.h,
-        ),
-        child: Consumer<AddQuestViewModel>(
-          builder: (context, viewModel, child) {
-            return SingleChildScrollView(
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  // Header
-                  Row(
-                    children: [
-                      Text(
-                        viewModel.isEditing ? 'EDIT QUEST' : '+ NEW QUEST',
-                        style: AppTextStyles.h3.copyWith(
-                          color: AppColors.textPrimary,
+      child: DraggableScrollableSheet(
+        initialChildSize: 0.7,
+        minChildSize: 0.4,
+        maxChildSize: 0.95,
+        expand: false,
+        builder: (context, scrollController) {
+          return Container(
+            decoration: BoxDecoration(
+              color: AppColors.backgroundDark,
+              borderRadius: BorderRadius.vertical(top: Radius.circular(20.r)),
+            ),
+            padding: EdgeInsets.only(
+              left: 20.w,
+              right: 20.w,
+              top: 20.h,
+              bottom:
+                  MediaQuery.of(context).viewInsets.bottom +
+                  MediaQuery.of(context).padding.bottom +
+                  20.h,
+            ),
+            child: Consumer<AddQuestViewModel>(
+              builder: (context, viewModel, child) {
+                return Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // Header (Fixed)
+                    Row(
+                      children: [
+                        AppIcons.questScroll(width: 28.w, height: 28.h),
+                        WidthSpacer(10),
+                        Text(
+                          viewModel.isEditing ? 'EDIT QUEST' : '+ NEW QUEST',
+                          style: AppTextStyles.h3.copyWith(
+                            color: AppColors.textPrimary,
+                          ),
+                        ),
+                        const Spacer(),
+                        IconButton(
+                          onPressed: () => Navigator.of(context).pop(),
+                          icon: const Icon(
+                            Icons.close,
+                            color: AppColors.textMuted,
+                          ),
+                        ),
+                      ],
+                    ),
+                    HeightSpacer(20),
+
+                    // Scrollable Content
+                    Expanded(
+                      child: SingleChildScrollView(
+                        controller: scrollController,
+                        physics: const AlwaysScrollableScrollPhysics(),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            // Title Field
+                            QuestTitleField(
+                              controller: _titleController,
+                              errorText: viewModel.titleError,
+                            ),
+                            HeightSpacer(16),
+
+                            // Description Field
+                            QuestDescriptionField(
+                              controller: _descriptionController,
+                            ),
+                            HeightSpacer(16),
+
+                            // Priority Selector
+                            QuestPrioritySelector(
+                              selectedPriority: viewModel.priority,
+                              onPriorityChanged: viewModel.updatePriority,
+                            ),
+                            HeightSpacer(16),
+
+                            // Deadline Picker
+                            QuestDeadlinePicker(
+                              deadline: viewModel.deadline,
+                              onTap: _selectDeadline,
+                            ),
+                            HeightSpacer(16),
+
+                            // Recurrence Picker
+                            QuestRecurrencePicker(
+                              selectedType: viewModel.recurrenceType,
+                              onTypeChanged: viewModel.updateRecurrence,
+                            ),
+                            HeightSpacer(24),
+                          ],
                         ),
                       ),
-                      const Spacer(),
-                      IconButton(
-                        onPressed: () => Navigator.of(context).pop(),
-                        icon: const Icon(Icons.close, color: AppColors.textMuted),
-                      ),
-                    ],
-                  ),
+                    ),
 
-                  HeightSpacer(20),
+                    HeightSpacer(8),
 
-                  // Title Field
-                  QuestTitleField(
-                    controller: _titleController,
-                    errorText: viewModel.titleError,
-                  ),
-
-                  HeightSpacer(16),
-
-                  // Description Field
-                  QuestDescriptionField(
-                    controller: _descriptionController,
-                  ),
-
-                  HeightSpacer(16),
-
-                  // Priority Selector
-                  QuestPrioritySelector(
-                    selectedPriority: viewModel.priority,
-                    onPriorityChanged: viewModel.updatePriority,
-                  ),
-
-                  HeightSpacer(16),
-
-                  // Deadline Picker
-                  QuestDeadlinePicker(
-                    deadline: viewModel.deadline,
-                    onTap: _selectDeadline,
-                  ),
-
-                  HeightSpacer(24),
-
-                  // Action Buttons
-                  QuestFormActions(
-                    isEditing: viewModel.isEditing,
-                    onSave: _saveQuest,
-                    onDelete: _deleteQuest,
-                  ),
-                ],
-              ),
-            );
-          },
-        ),
+                    // Action Buttons (Fixed at bottom)
+                    QuestFormActions(
+                      isEditing: viewModel.isEditing,
+                      onSave: _saveQuest,
+                      onDelete: _deleteQuest,
+                    ),
+                  ],
+                );
+              },
+            ),
+          );
+        },
       ),
     );
   }

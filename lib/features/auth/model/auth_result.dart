@@ -6,12 +6,7 @@ class AuthResult {
   final UserModel? user;
   final String? token;
 
-  AuthResult({
-    required this.success,
-    this.message,
-    this.user,
-    this.token,
-  });
+  AuthResult({required this.success, this.message, this.user, this.token});
 
   factory AuthResult.success({
     required UserModel user,
@@ -27,9 +22,6 @@ class AuthResult {
   }
 
   factory AuthResult.failure({required String message}) {
-    return AuthResult(
-      success: false,
-      message: message,
-    );
+    return AuthResult(success: false, message: message);
   }
 }

@@ -1,11 +1,38 @@
+import 'package:hive/hive.dart';
+
+part 'quest.g.dart';
+
+@HiveType(typeId: 1)
 class Quest {
+  @HiveField(0)
   final String id;
+
+  @HiveField(1)
   final String title;
+
+  @HiveField(2)
   final String? description;
+
+  @HiveField(3)
   final DateTime? deadline;
+
+  @HiveField(4)
   final QuestPriority priority;
+
+  @HiveField(5)
   final bool isCompleted;
-  final DateTime? completedAt; // Track when quest was completed
+
+  @HiveField(6)
+  final DateTime? completedAt;
+
+  @HiveField(7)
+  final DateTime createdAt;
+
+  @HiveField(8)
+  final String? recurrenceId; // Link to RecurringQuest if applicable
+
+  @HiveField(9)
+  final int pomodorosCompleted;
 
   Quest({
     required this.id,
@@ -15,9 +42,31 @@ class Quest {
     this.priority = QuestPriority.medium,
     this.isCompleted = false,
     this.completedAt,
-  });
+    DateTime? createdAt,
+    this.recurrenceId,
+    this.pomodorosCompleted = 0,
+  }) : createdAt = createdAt ?? DateTime.now();
 
-  /// Create a copy of this Quest with some fields replaced
+  /// XP reward based on priority
+  int get xpReward {
+    switch (priority) {
+      case QuestPriority.low:
+        return 10;
+      case QuestPriority.medium:
+        return 25;
+      case QuestPriority.high:
+        return 50;
+    }
+  }
+
+  /// Duration to complete (only if completedAt is set)
+  Duration? get completionDuration {
+    if (completedAt == null) return null;
+    return completedAt!.difference(createdAt);
+  }
+
+  bool get isRecurring => recurrenceId != null;
+
   Quest copyWith({
     String? id,
     String? title,
@@ -26,6 +75,9 @@ class Quest {
     QuestPriority? priority,
     bool? isCompleted,
     DateTime? completedAt,
+    DateTime? createdAt,
+    String? recurrenceId,
+    int? pomodorosCompleted,
   }) {
     return Quest(
       id: id ?? this.id,
@@ -35,62 +87,106 @@ class Quest {
       priority: priority ?? this.priority,
       isCompleted: isCompleted ?? this.isCompleted,
       completedAt: completedAt ?? this.completedAt,
+      createdAt: createdAt ?? this.createdAt,
+      recurrenceId: recurrenceId ?? this.recurrenceId,
+      pomodorosCompleted: pomodorosCompleted ?? this.pomodorosCompleted,
     );
   }
 
-  /// Convert to JSON (for SharedPreferences)
   Map<String, dynamic> toJson() {
     return {
       'id': id,
       'title': title,
       'description': description,
-      'deadline': deadline?.toIso8601String(),
-      'priority': priority.name,
-      'isCompleted': isCompleted,
-      'completedAt': completedAt?.toIso8601String(),
+      'due_date': deadline?.toIso8601String(),
+      'priority': priority.name.toUpperCase(),
+      'is_completed': isCompleted,
+      'completed_at': completedAt?.toIso8601String(),
+      'created_at': createdAt.toIso8601String(),
+      'recurrence_id': recurrenceId,
+      'pomodoros_completed': pomodorosCompleted,
     };
   }
 
-  /// Create from JSON
+  /// Strictly mapped payload for backend POST /quests (Matches CreateQuestDto)
+  Map<String, dynamic> toCreateJson(String heroId) {
+    return {
+      'hero': heroId,
+      'title': title,
+      if (description != null && description!.isNotEmpty)
+        'description': description,
+      'priority': priority.name.toLowerCase(),
+      if (deadline != null) 'dueDate': deadline?.toIso8601String(),
+      'rewardXp': xpReward,
+    };
+  }
+
+  /// Strictly mapped payload for backend PUT /quests (Matches UpdateQuestDto)
+  Map<String, dynamic> toUpdateJson() {
+    return {
+      'title': title,
+      if (description != null) 'description': description,
+      'priority': priority.name.toLowerCase(),
+      if (deadline != null) 'dueDate': deadline?.toIso8601String(),
+      'rewardXp': xpReward,
+    };
+  }
+
   factory Quest.fromJson(Map<String, dynamic> json) {
     return Quest(
-      id: json['id'] as String,
+      id: (json['id'] ?? json['_id']).toString(),
       title: json['title'] as String,
       description: json['description'] as String?,
-      deadline: json['deadline'] != null 
-          ? DateTime.parse(json['deadline'] as String)
+      deadline: (json['deadline'] ?? json['due_date']) != null
+          ? DateTime.parse((json['deadline'] ?? json['due_date']) as String)
           : null,
       priority: QuestPriority.values.firstWhere(
-        (p) => p.name == json['priority'],
+        (p) =>
+            p.name.toLowerCase() ==
+            (json['priority'] as String?)?.toLowerCase(),
         orElse: () => QuestPriority.medium,
       ),
-      isCompleted: json['isCompleted'] as bool? ?? false,
-      completedAt: json['completedAt'] != null
-          ? DateTime.parse(json['completedAt'] as String)
+      isCompleted:
+          (json['isCompleted'] ?? json['is_completed']) as bool? ?? false,
+      completedAt: (json['completedAt'] ?? json['completed_at']) != null
+          ? DateTime.parse(
+              (json['completedAt'] ?? json['completed_at']) as String,
+            )
           : null,
+      createdAt: (json['createdAt'] ?? json['created_at']) != null
+          ? DateTime.parse((json['createdAt'] ?? json['created_at']) as String)
+          : DateTime.now(),
+      recurrenceId: json['recurrence_id'] as String?,
+      pomodorosCompleted: (json['pomodoros_completed'] as int?) ?? 0,
     );
   }
 }
 
-/// Quest Priority Level
+@HiveType(typeId: 2)
 enum QuestPriority {
+  @HiveField(0)
   low,
+  @HiveField(1)
   medium,
+  @HiveField(2)
   high;
 
-  /// Get priority icon/emoji
   String get icon {
+    // Return SVG asset path instead of emoji
+    return pixelIcon;
+  }
+
+  String get pixelIcon {
     switch (this) {
       case QuestPriority.low:
-        return '🛡️';
+        return 'assets/icons/lowPriorityIcon.svg';
       case QuestPriority.medium:
-        return '⚔️';
+        return 'assets/icons/mediumPriorityIcon.svg';
       case QuestPriority.high:
-        return '🔥';
+        return 'assets/icons/highPriorityIcon.svg';
     }
   }
 
-  /// Get priority label
   String get label {
     switch (this) {
       case QuestPriority.low:

@@ -7,10 +7,7 @@ import '../../../../../core/widgets/spacing_widgets.dart';
 
 /// Description input field for quest form
 class QuestDescriptionField extends StatelessWidget {
-  const QuestDescriptionField({
-    super.key,
-    required this.controller,
-  });
+  const QuestDescriptionField({super.key, required this.controller});
 
   final TextEditingController controller;
 
@@ -21,16 +18,12 @@ class QuestDescriptionField extends StatelessWidget {
       children: [
         Text(
           'Description (Optional)',
-          style: AppTextStyles.bodyM.copyWith(
-            color: AppColors.textSecondary,
-          ),
+          style: AppTextStyles.bodyM.copyWith(color: AppColors.textSecondary),
         ),
         HeightSpacer(8),
         TextFormField(
           controller: controller,
-          style: AppTextStyles.bodyM.copyWith(
-            color: AppColors.textPrimary,
-          ),
+          style: AppTextStyles.bodyM.copyWith(color: AppColors.textPrimary),
           maxLines: 3,
           decoration: InputDecoration(
             hintText: 'Quest details...',

@@ -6,10 +6,7 @@ import '../../../../core/theme/app_colors.dart';
 
 /// Reusable scaffold for auth screens with game-styled background
 class AuthScaffold extends StatefulWidget {
-  const AuthScaffold({
-    super.key,
-    required this.body,
-  });
+  const AuthScaffold({super.key, required this.body});
 
   final Widget body;
 

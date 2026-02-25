@@ -5,7 +5,6 @@ import '../../model/quest.dart';
 import '../widgets/quest_card.dart';
 import '../widgets/quest_empty_state.dart';
 
-
 class QuestListView extends StatelessWidget {
   const QuestListView({
     super.key,
@@ -25,10 +24,7 @@ class QuestListView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (quests.isEmpty) {
-      return QuestEmptyState(
-        isActiveTab: isActiveTab,
-        hasFilters: hasFilters,
-      );
+      return QuestEmptyState(isActiveTab: isActiveTab, hasFilters: hasFilters);
     }
 
     return ListView.builder(

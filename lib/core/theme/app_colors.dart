@@ -71,4 +71,31 @@ class AppColors {
   // ================================
   static const Color accent = Color(0xFFE7C9A5);
   static const Color accentDark = Color(0xFFC2A178);
+
+  // ================================
+  // Premium Gradients
+  // ================================
+  static const LinearGradient mysticGradient = LinearGradient(
+    begin: Alignment.topLeft,
+    end: Alignment.bottomRight,
+    colors: [primary, primaryShade50],
+  );
+
+  static const LinearGradient heroicGradient = LinearGradient(
+    begin: Alignment.topCenter,
+    end: Alignment.bottomCenter,
+    colors: [priorityHigh, primaryShade70],
+  );
+
+  static const LinearGradient goldenGradient = LinearGradient(
+    begin: Alignment.topLeft,
+    end: Alignment.bottomRight,
+    colors: [accent, accentDark],
+  );
+
+  static const LinearGradient glassGradient = LinearGradient(
+    begin: Alignment.topLeft,
+    end: Alignment.bottomRight,
+    colors: [Color(0x33FFFFFF), Color(0x11FFFFFF)],
+  );
 }

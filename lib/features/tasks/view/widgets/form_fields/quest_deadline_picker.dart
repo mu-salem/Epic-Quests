@@ -23,9 +23,7 @@ class QuestDeadlinePicker extends StatelessWidget {
       children: [
         Text(
           'Deadline (Optional)',
-          style: AppTextStyles.bodyM.copyWith(
-            color: AppColors.textSecondary,
-          ),
+          style: AppTextStyles.bodyM.copyWith(color: AppColors.textSecondary),
         ),
         HeightSpacer(8),
         GestureDetector(

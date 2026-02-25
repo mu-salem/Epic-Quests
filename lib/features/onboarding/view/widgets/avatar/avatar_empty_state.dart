@@ -4,7 +4,6 @@ import 'package:epicquests/core/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-
 /// Empty state for when no avatars exist
 class AvatarEmptyState extends StatelessWidget {
   const AvatarEmptyState({super.key});
@@ -23,16 +22,12 @@ class AvatarEmptyState extends StatelessWidget {
           HeightSpacer(16),
           Text(
             'NO AVATARS YET',
-            style: AppTextStyles.h3.copyWith(
-              color: AppColors.textSecondary,
-            ),
+            style: AppTextStyles.h3.copyWith(color: AppColors.textSecondary),
           ),
           HeightSpacer(8),
           Text(
             'Create your first avatar to begin',
-            style: AppTextStyles.bodyM.copyWith(
-              color: AppColors.textMuted,
-            ),
+            style: AppTextStyles.bodyM.copyWith(color: AppColors.textMuted),
           ),
         ],
       ),

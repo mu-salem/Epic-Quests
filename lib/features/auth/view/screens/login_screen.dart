@@ -52,8 +52,9 @@ class _LoginScreenState extends State<LoginScreen> {
     final success = await _viewModel.login();
 
     if (success && mounted) {
-      // Navigate to home
-      context.go(AppRouter.home);
+      debugPrint('✅ [Login] Login successful, navigating to Avatar Selection');
+      // After login, go to Avatar Selection to choose/confirm hero
+      context.go(AppRouter.onboardingAvatar);
     }
   }
 
@@ -61,99 +62,103 @@ class _LoginScreenState extends State<LoginScreen> {
   Widget build(BuildContext context) {
     return ChangeNotifierProvider.value(
       value: _viewModel,
-      child: AuthScaffold(
-        body: Consumer<LoginViewModel>(
-          builder: (context, viewModel, child) {
-            return Column(
-              children: [
-                HeightSpacer(40),
+      child: Stack(
+        children: [
+          AuthScaffold(
+            body: Consumer<LoginViewModel>(
+              builder: (context, viewModel, child) {
+                return Column(
+                  children: [
+                    HeightSpacer(40),
 
-                // Header
-                const PixelHeaderCard(
-                  title: 'LOGIN',
-                  subtitle: 'Return to your quest',
-                ),
+                    // Header
+                    const PixelHeaderCard(
+                      title: 'LOGIN',
+                      subtitle: 'Return to your quest',
+                    ),
 
-                HeightSpacer(40),
+                    HeightSpacer(40),
 
-                // Email field
-                AuthTextField(
-                  controller: _emailController,
-                  label: 'EMAIL',
-                  hint: 'hero@epicquests.com',
-                  keyboardType: TextInputType.emailAddress,
-                  errorText: viewModel.emailError,
-                  enabled: !viewModel.isLoading,
-                ),
+                    // Email field
+                    AuthTextField(
+                      controller: _emailController,
+                      label: 'EMAIL',
+                      hint: 'hero@epicquests.com',
+                      keyboardType: TextInputType.emailAddress,
+                      errorText: viewModel.emailError,
+                      enabled: !viewModel.isLoading,
+                    ),
 
-                HeightSpacer(20),
+                    HeightSpacer(20),
 
-                // Password field
-                AuthTextField(
-                  controller: _passwordController,
-                  label: 'PASSWORD',
-                  hint: '••••••••',
-                  obscureText: true,
-                  errorText: viewModel.passwordError,
-                  enabled: !viewModel.isLoading,
-                ),
+                    // Password field
+                    AuthTextField(
+                      controller: _passwordController,
+                      label: 'PASSWORD',
+                      hint: '••••••••',
+                      obscureText: true,
+                      errorText: viewModel.passwordError,
+                      enabled: !viewModel.isLoading,
+                    ),
 
-                HeightSpacer(12),
+                    HeightSpacer(12),
 
-                // Forgot password link
-                Align(
-                  alignment: Alignment.centerRight,
-                  child: GestureDetector(
-                    onTap: viewModel.isLoading
-                        ? null
-                        : () => context.push(AppRouter.forgotPasswordEmail),
-                    child: Text(
-                      'Forgot password?',
-                      style: AppTextStyles.bodyS.copyWith(
-                        color: AppColors.accent,
-                        decoration: TextDecoration.underline,
-                        decorationColor: AppColors.accent,
+                    // Forgot password link
+                    Align(
+                      alignment: Alignment.centerRight,
+                      child: GestureDetector(
+                        onTap: viewModel.isLoading
+                            ? null
+                            : () => context.push(AppRouter.forgotPasswordEmail),
+                        child: Text(
+                          'Forgot password?',
+                          style: AppTextStyles.bodyS.copyWith(
+                            color: AppColors.accent,
+                            decoration: TextDecoration.underline,
+                            decorationColor: AppColors.accent,
+                          ),
+                        ),
                       ),
                     ),
-                  ),
-                ),
 
-                HeightSpacer(32),
+                    HeightSpacer(32),
 
-                // Error message
-                if (viewModel.errorMessage != null) ...[  
-                  ErrorMessageBox(message: viewModel.errorMessage!),
-                  HeightSpacer(16),
-                ],
+                    // Error message
+                    if (viewModel.errorMessage != null) ...[
+                      ErrorMessageBox(message: viewModel.errorMessage!),
+                      HeightSpacer(16),
+                    ],
 
-                // Login button
-                PrimaryButton(
-                  onPressed: viewModel.isLoading ? null : _handleLogin,
-                  text: 'LOGIN',
-                  isLoading: viewModel.isLoading,
-                  backgroundColor: AppColors.panelLight,
-                  borderColor: AppColors.accent,
-                  shadowColor: AppColors.accent,
-                  textColor: AppColors.backgroundDark,
-                  width: double.infinity,
-                ),
+                    // Login button
+                    PrimaryButton(
+                      onPressed: viewModel.isLoading ? null : _handleLogin,
+                      text: 'LOGIN',
+                      isLoading: viewModel.isLoading,
+                      backgroundColor: AppColors.panelLight,
+                      borderColor: AppColors.accent,
+                      shadowColor: AppColors.accent,
+                      textColor: AppColors.backgroundDark,
+                      width: double.infinity,
+                    ),
 
-                HeightSpacer(24),
+                    HeightSpacer(24),
 
-                // Register link
-                AuthLinkRow(
-                  text: 'New hero?',
-                  actionText: 'Create account',
-                  onTap: viewModel.isLoading
-                      ? () {}
-                      : () => context.push(AppRouter.register),
-                ),
+                    // Register link
+                    AuthLinkRow(
+                      text: 'New hero?',
+                      actionText: 'Create account',
+                      onTap: viewModel.isLoading
+                          ? () {}
+                          : () => context.push(AppRouter.register),
+                    ),
 
-                HeightSpacer(20),
-              ],
-            );
-          },
-        ),
+                    HeightSpacer(20),
+                  ],
+                );
+              },
+            ),
+          ),
+        ],
       ),
     );
   }

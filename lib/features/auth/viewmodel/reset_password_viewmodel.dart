@@ -1,6 +1,6 @@
 import 'package:flutter/foundation.dart';
 
-import '../data/local/fake_auth_repository.dart';
+import '../data/remote/api_auth_repository.dart';
 import '../data/repositories/auth_repository.dart';
 
 /// ViewModel for Reset Password screen
@@ -13,7 +13,7 @@ class ResetPasswordViewModel extends ChangeNotifier {
     required this.email,
     required this.code,
     AuthRepository? repository,
-  }) : _repository = repository ?? FakeAuthRepository();
+  }) : _repository = repository ?? ApiAuthRepository();
 
   // Form state
   String _password = '';
@@ -36,7 +36,8 @@ class ResetPasswordViewModel extends ChangeNotifier {
   String? get errorMessage => _errorMessage;
   String? get successMessage => _successMessage;
   String? get passwordError => _showValidationErrors ? _passwordError : null;
-  String? get confirmPasswordError => _showValidationErrors ? _confirmPasswordError : null;
+  String? get confirmPasswordError =>
+      _showValidationErrors ? _confirmPasswordError : null;
   bool get isValid =>
       _password.isNotEmpty &&
       _confirmPassword.isNotEmpty &&

@@ -51,8 +51,6 @@ class AppTheme {
         iconTheme: const IconThemeData(color: AppColors.textPrimary),
       ),
 
-
-
       // Divider
       dividerTheme: DividerThemeData(
         color: AppColors.border.withValues(alpha: 0.6),
@@ -68,7 +66,10 @@ class AppTheme {
         labelStyle: AppTextStyles.bodyM,
         helperStyle: AppTextStyles.caption,
         errorStyle: AppTextStyles.caption.copyWith(color: AppColors.error),
-        contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 14),
+        contentPadding: const EdgeInsets.symmetric(
+          horizontal: 14,
+          vertical: 14,
+        ),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(14),
           borderSide: const BorderSide(color: AppColors.border, width: 1),
@@ -109,7 +110,9 @@ class AppTheme {
       outlinedButtonTheme: OutlinedButtonThemeData(
         style: OutlinedButton.styleFrom(
           foregroundColor: AppColors.textPrimary,
-          textStyle: AppTextStyles.button.copyWith(color: AppColors.textPrimary),
+          textStyle: AppTextStyles.button.copyWith(
+            color: AppColors.textPrimary,
+          ),
           padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 14),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(14),
@@ -140,10 +143,7 @@ class AppTheme {
       ),
 
       // Icons
-      iconTheme: const IconThemeData(
-        color: AppColors.textPrimary,
-        size: 22,
-      ),
+      iconTheme: const IconThemeData(color: AppColors.textPrimary, size: 22),
 
       // SnackBar
       snackBarTheme: SnackBarThemeData(

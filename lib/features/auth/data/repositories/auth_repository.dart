@@ -6,7 +6,10 @@ abstract class AuthRepository {
   Future<AuthResult> login(String email, String password);
 
   /// Register a new user
-  Future<AuthResult> register(String email, String password);
+  Future<AuthResult> register(String username, String email, String password);
+
+  /// Verify email OTP
+  Future<AuthResult> verifyEmail(String email, String code);
 
   /// Send password reset code to email
   Future<AuthResult> sendResetCode(String email);
@@ -15,7 +18,11 @@ abstract class AuthRepository {
   Future<AuthResult> verifyResetCode(String email, String code);
 
   /// Reset password with verified code
-  Future<AuthResult> resetPassword(String email, String code, String newPassword);
+  Future<AuthResult> resetPassword(
+    String email,
+    String code,
+    String newPassword,
+  );
 
   /// Logout current user
   Future<void> logout();

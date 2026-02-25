@@ -1,6 +1,6 @@
 import 'package:flutter/foundation.dart';
 
-import '../data/local/fake_auth_repository.dart';
+import '../data/remote/api_auth_repository.dart';
 import '../data/repositories/auth_repository.dart';
 
 /// ViewModel for Login screen
@@ -8,7 +8,7 @@ class LoginViewModel extends ChangeNotifier {
   final AuthRepository _repository;
 
   LoginViewModel({AuthRepository? repository})
-      : _repository = repository ?? FakeAuthRepository();
+    : _repository = repository ?? ApiAuthRepository();
 
   // Form state
   String _email = '';
@@ -32,7 +32,11 @@ class LoginViewModel extends ChangeNotifier {
   String? get successMessage => _successMessage;
   String? get emailError => _showValidationErrors ? _emailError : null;
   String? get passwordError => _showValidationErrors ? _passwordError : null;
-  bool get isValid => _email.isNotEmpty && _password.isNotEmpty && _emailError == null && _passwordError == null;
+  bool get isValid =>
+      _email.isNotEmpty &&
+      _password.isNotEmpty &&
+      _emailError == null &&
+      _passwordError == null;
 
   /// Update email
   void updateEmail(String value) {

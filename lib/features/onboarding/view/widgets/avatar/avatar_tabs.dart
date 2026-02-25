@@ -79,7 +79,9 @@ class AvatarTabs extends StatelessWidget {
                   'GIRLS',
                   textAlign: TextAlign.center,
                   style: AppTextStyles.h4.copyWith(
-                    color: !isBoys ? AppColors.textPrimary : AppColors.textMuted,
+                    color: !isBoys
+                        ? AppColors.textPrimary
+                        : AppColors.textMuted,
                   ),
                 ),
               ),

@@ -12,8 +12,16 @@ class AvatarTemplates {
     AvatarTemplate(name: 'Jax', asset: AppImages.avatarJax, gender: 'boy'),
     AvatarTemplate(name: 'Kane', asset: AppImages.avatarKane, gender: 'boy'),
     AvatarTemplate(name: 'Lynx', asset: AppImages.avatarLynx, gender: 'boy'),
-    AvatarTemplate(name: 'Cedric', asset: AppImages.avatarCedric, gender: 'boy'),
-    AvatarTemplate(name: 'Ragnar', asset: AppImages.avatarRagnar, gender: 'boy'),
+    AvatarTemplate(
+      name: 'Cedric',
+      asset: AppImages.avatarCedric,
+      gender: 'boy',
+    ),
+    AvatarTemplate(
+      name: 'Ragnar',
+      asset: AppImages.avatarRagnar,
+      gender: 'boy',
+    ),
     AvatarTemplate(name: 'Orion', asset: AppImages.avatarOrion, gender: 'boy'),
   ];
 
@@ -23,7 +31,11 @@ class AvatarTemplates {
     AvatarTemplate(name: 'Kira', asset: AppImages.avatarKira, gender: 'girl'),
     AvatarTemplate(name: 'Elara', asset: AppImages.avatarElara, gender: 'girl'),
     AvatarTemplate(name: 'Vexa', asset: AppImages.avatarVexa, gender: 'girl'),
-    AvatarTemplate(name: 'Seraphina', asset: AppImages.avatarSeraphina, gender: 'girl'),
+    AvatarTemplate(
+      name: 'Seraphina',
+      asset: AppImages.avatarSeraphina,
+      gender: 'girl',
+    ),
     AvatarTemplate(name: 'Kaela', asset: AppImages.avatarKaela, gender: 'girl'),
     AvatarTemplate(name: 'Sylvi', asset: AppImages.avatarSylvi, gender: 'girl'),
     AvatarTemplate(name: 'Nyra', asset: AppImages.avatarNyra, gender: 'girl'),

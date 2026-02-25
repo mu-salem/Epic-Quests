@@ -1,6 +1,6 @@
 import 'package:flutter/foundation.dart';
 
-import '../data/local/fake_auth_repository.dart';
+import '../data/remote/api_auth_repository.dart';
 import '../data/repositories/auth_repository.dart';
 
 /// ViewModel for Forgot Password Code screen
@@ -8,10 +8,8 @@ class ForgotPasswordCodeViewModel extends ChangeNotifier {
   final AuthRepository _repository;
   final String email;
 
-  ForgotPasswordCodeViewModel({
-    required this.email,
-    AuthRepository? repository,
-  }) : _repository = repository ?? FakeAuthRepository();
+  ForgotPasswordCodeViewModel({required this.email, AuthRepository? repository})
+    : _repository = repository ?? ApiAuthRepository();
 
   // Form state
   String _code = '';

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
@@ -10,7 +9,7 @@ import '../../../../core/widgets/primary_button.dart';
 import '../../../../core/widgets/error_message_box.dart';
 import '../../viewmodel/forgot_password_code_viewmodel.dart';
 import '../widgets/auth_scaffold.dart';
-import '../widgets/auth_text_field.dart';
+import '../widgets/otp_code_boxes.dart';
 import '../widgets/pixel_header_card.dart';
 
 class ForgotPasswordCodeScreen extends StatefulWidget {
@@ -25,22 +24,16 @@ class ForgotPasswordCodeScreen extends StatefulWidget {
 
 class _ForgotPasswordCodeScreenState extends State<ForgotPasswordCodeScreen> {
   late ForgotPasswordCodeViewModel _viewModel;
-  final _codeController = TextEditingController();
 
   @override
   void initState() {
     super.initState();
     _viewModel = ForgotPasswordCodeViewModel(email: widget.email);
-
-    _codeController.addListener(() {
-      _viewModel.updateCode(_codeController.text);
-    });
   }
 
   @override
   void dispose() {
     _viewModel.dispose();
-    _codeController.dispose();
     super.dispose();
   }
 
@@ -88,22 +81,37 @@ class _ForgotPasswordCodeScreenState extends State<ForgotPasswordCodeScreen> {
 
                 HeightSpacer(40),
 
-                // Code field
-                AuthTextField(
-                  controller: _codeController,
-                  label: 'VERIFICATION CODE',
-                  hint: '123456',
-                  keyboardType: TextInputType.number,
-                  errorText: viewModel.codeError,
-                  enabled: !viewModel.isLoading,
-                  maxLength: 6,
-                  inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                // Code boxes
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  child: OtpCodeBoxes(
+                    length: 6,
+                    enabled: !viewModel.isLoading,
+                    hasError: viewModel.codeError != null,
+                    onChanged: (code) {
+                      _viewModel.updateCode(code);
+                    },
+                  ),
                 ),
+
+                if (viewModel.codeError != null) ...[
+                  HeightSpacer(8),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 24),
+                    child: Text(
+                      viewModel.codeError!,
+                      style: const TextStyle(
+                        color: AppColors.error,
+                        fontSize: 12,
+                      ),
+                    ),
+                  ),
+                ],
 
                 HeightSpacer(32),
 
                 // Error message
-                if (viewModel.errorMessage != null) ...[  
+                if (viewModel.errorMessage != null) ...[
                   ErrorMessageBox(message: viewModel.errorMessage!),
                   HeightSpacer(16),
                 ],

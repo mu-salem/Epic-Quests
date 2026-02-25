@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import '../../../../core/resources/app_icons.dart';
 
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/widgets/spacing_widgets.dart';
 import '../../../../core/theme/app_text_styles.dart';
-
 
 class QuestTabs extends StatelessWidget {
   const QuestTabs({
@@ -40,49 +40,65 @@ class QuestTabs extends StatelessWidget {
           dividerColor: AppColors.transparent,
           tabs: [
             Tab(
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text('ACTIVE'),
-                  WidthSpacer(6),
-                  Container(
-                    padding: EdgeInsets.symmetric(horizontal: 6.w, vertical: 2.h),
-                    decoration: BoxDecoration(
-                      color: AppColors.primary,
-                      borderRadius: BorderRadius.circular(8.r),
-                    ),
-                    child: Text(
-                      '$activeCount',
-                      style: AppTextStyles.caption.copyWith(
-                        fontSize: 12.sp,
-                        color: AppColors.textPrimary,
+              child: FittedBox(
+                fit: BoxFit.scaleDown,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    AppIcons.questScroll(width: 18.w, height: 18.h),
+                    WidthSpacer(6),
+                    Text('ACTIVE'),
+                    WidthSpacer(6),
+                    Container(
+                      padding: EdgeInsets.symmetric(
+                        horizontal: 6.w,
+                        vertical: 2.h,
+                      ),
+                      decoration: BoxDecoration(
+                        color: AppColors.primary,
+                        borderRadius: BorderRadius.circular(8.r),
+                      ),
+                      child: Text(
+                        '$activeCount',
+                        style: AppTextStyles.caption.copyWith(
+                          fontSize: 12.sp,
+                          color: AppColors.textPrimary,
+                        ),
                       ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
             Tab(
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text('COMPLETED'),
-                  WidthSpacer(6),
-                  Container(
-                    padding: EdgeInsets.symmetric(horizontal: 6.w, vertical: 2.h),
-                    decoration: BoxDecoration(
-                      color: AppColors.success,
-                      borderRadius: BorderRadius.circular(8.r),
-                    ),
-                    child: Text(
-                      '$completedCount',
-                      style: AppTextStyles.caption.copyWith(
-                        fontSize: 12.sp,
-                        color: AppColors.white,
+              child: FittedBox(
+                fit: BoxFit.scaleDown,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    AppIcons.completedQuest(width: 18.w, height: 18.h),
+                    WidthSpacer(6),
+                    Text('COMPLETED'),
+                    WidthSpacer(6),
+                    Container(
+                      padding: EdgeInsets.symmetric(
+                        horizontal: 6.w,
+                        vertical: 2.h,
+                      ),
+                      decoration: BoxDecoration(
+                        color: AppColors.success,
+                        borderRadius: BorderRadius.circular(8.r),
+                      ),
+                      child: Text(
+                        '$completedCount',
+                        style: AppTextStyles.caption.copyWith(
+                          fontSize: 12.sp,
+                          color: AppColors.white,
+                        ),
                       ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
           ],

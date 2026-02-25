@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import '../../../../core/resources/app_icons.dart';
 
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/widgets/spacing_widgets.dart';
@@ -49,10 +50,7 @@ class PriorityFilterChip extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             if (icon != null) ...[
-              Text(
-                icon!,
-                style: TextStyle(fontSize: 18.sp),
-              ),
+              _getPriorityIcon(icon!, width: 18.w, height: 18.h),
               WidthSpacer(6),
             ],
             Text(
@@ -67,10 +65,22 @@ class PriorityFilterChip extends StatelessWidget {
       ),
     );
   }
+
+  /// Get icon based on string path
+  Widget _getPriorityIcon(String iconPath, {double? width, double? height}) {
+    if (iconPath.contains('lowPriority')) {
+      return AppIcons.lowPriority(width: width, height: height);
+    } else if (iconPath.contains('mediumPriority')) {
+      return AppIcons.mediumPriority(width: width, height: height);
+    } else if (iconPath.contains('highPriority')) {
+      return AppIcons.highPriority(width: width, height: height);
+    }
+    return SizedBox(width: width, height: height);
+  }
 }
 
 /// Priority Filter Section
-/// 
+///
 /// Shows all priority filter options
 class PriorityFilterSection extends StatelessWidget {
   const PriorityFilterSection({

@@ -11,7 +11,6 @@ import '../widgets/quest_list_view.dart';
 import '../widgets/quest_search_bar.dart';
 import '../widgets/quest_tabs.dart';
 
-
 class HomeContentWidget extends StatelessWidget {
   const HomeContentWidget({
     super.key,
@@ -37,14 +36,16 @@ class HomeContentWidget extends StatelessWidget {
         // Hero Header
         Padding(
           padding: EdgeInsets.fromLTRB(16.w, 16.h, 16.w, 12.h),
-          child: Consumer<TasksViewModel>(
-            builder: (context, viewModel, child) {
+          child: Selector<TasksViewModel, (String, String, int, int, int)>(
+            selector: (_, vm) =>
+                (vm.avatarAsset, vm.heroName, vm.level, vm.currentXP, vm.maxXP),
+            builder: (context, data, child) {
               return HeroHeader(
-                avatarAsset: viewModel.avatarAsset,
-                heroName: viewModel.heroName,
-                level: viewModel.level,
-                currentXP: viewModel.currentXP,
-                maxXP: viewModel.maxXP,
+                avatarAsset: data.$1,
+                heroName: data.$2,
+                level: data.$3,
+                currentXP: data.$4,
+                maxXP: data.$5,
                 onTap: onAvatarTap,
               );
             },
@@ -60,12 +61,13 @@ class HomeContentWidget extends StatelessWidget {
         HeightSpacer(12),
 
         // Priority Filter
-        Consumer<TasksViewModel>(
-          builder: (context, viewModel, child) {
+        Selector<TasksViewModel, QuestPriority?>(
+          selector: (_, vm) => vm.selectedPriority,
+          builder: (context, selectedPriority, child) {
             return PriorityFilterSection(
-              selectedPriority: viewModel.selectedPriority,
+              selectedPriority: selectedPriority,
               onPriorityChanged: (priority) {
-                viewModel.updatePriorityFilter(priority);
+                context.read<TasksViewModel>().updatePriorityFilter(priority);
               },
             );
           },
@@ -74,12 +76,16 @@ class HomeContentWidget extends StatelessWidget {
         HeightSpacer(12),
 
         // Tabs
-        Consumer<TasksViewModel>(
-          builder: (context, viewModel, child) {
+        Selector<TasksViewModel, (int, int)>(
+          selector: (_, vm) => (
+            vm.filteredActiveQuests.length,
+            vm.filteredCompletedQuests.length,
+          ),
+          builder: (context, data, child) {
             return QuestTabs(
               tabController: tabController,
-              activeCount: viewModel.filteredActiveQuests.length,
-              completedCount: viewModel.filteredCompletedQuests.length,
+              activeCount: data.$1,
+              completedCount: data.$2,
             );
           },
         ),
@@ -88,25 +94,30 @@ class HomeContentWidget extends StatelessWidget {
 
         // Quest List with TabBarView
         Expanded(
-          child: Consumer<TasksViewModel>(
-            builder: (context, viewModel, child) {
+          child: Selector<TasksViewModel, (List<Quest>, List<Quest>, bool)>(
+            selector: (_, vm) => (
+              vm.filteredActiveQuests,
+              vm.filteredCompletedQuests,
+              vm.hasActiveFilters,
+            ),
+            builder: (context, data, child) {
               return TabBarView(
                 controller: tabController,
                 children: [
                   // Active Quests Tab
                   QuestListView(
-                    quests: viewModel.filteredActiveQuests,
+                    quests: data.$1,
                     isActiveTab: true,
-                    hasFilters: viewModel.hasActiveFilters,
+                    hasFilters: data.$3,
                     onToggleComplete: onQuestToggle,
                     onTap: onQuestTap,
                   ),
-                  
+
                   // Completed Quests Tab
                   QuestListView(
-                    quests: viewModel.filteredCompletedQuests,
+                    quests: data.$2,
                     isActiveTab: false,
-                    hasFilters: viewModel.hasActiveFilters,
+                    hasFilters: data.$3,
                     onToggleComplete: onQuestToggle,
                     onTap: onQuestTap,
                   ),

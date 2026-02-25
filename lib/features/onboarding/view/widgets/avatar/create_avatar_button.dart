@@ -9,10 +9,7 @@ import 'package:epicquests/core/theme/app_text_styles.dart';
 class CreateAvatarButton extends StatelessWidget {
   final VoidCallback onPressed;
 
-  const CreateAvatarButton({
-    super.key,
-    required this.onPressed,
-  });
+  const CreateAvatarButton({super.key, required this.onPressed});
 
   @override
   Widget build(BuildContext context) {

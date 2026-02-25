@@ -4,12 +4,8 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/widgets/primary_button.dart';
 
-
 class NewQuestButton extends StatelessWidget {
-  const NewQuestButton({
-    super.key,
-    required this.onPressed,
-  });
+  const NewQuestButton({super.key, required this.onPressed});
 
   final VoidCallback onPressed;
 

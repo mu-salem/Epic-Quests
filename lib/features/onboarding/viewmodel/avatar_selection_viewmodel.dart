@@ -2,7 +2,7 @@ import 'package:flutter/foundation.dart';
 
 import '../../../core/routing/app_router.dart';
 import '../../tasks/data/repositories/hero_profile_repository.dart';
-import '../../tasks/data/local/local_hero_profile_repository.dart';
+import '../../tasks/data/repositories/sync_hero_profile_repository.dart';
 import '../../tasks/model/hero_profile.dart';
 import '../model/avatar_item.dart';
 import '../model/avatar_templates.dart';
@@ -24,8 +24,8 @@ class AvatarSelectionViewModel extends ChangeNotifier {
   AvatarSelectionViewModel({
     HeroProfileRepository? heroRepository,
     AvatarRepository? avatarRepository,
-  })  : _heroRepository = heroRepository ?? LocalHeroProfileRepository(),
-        _avatarRepository = avatarRepository ?? LocalAvatarRepository() {
+  }) : _heroRepository = heroRepository ?? SyncHeroProfileRepository(),
+       _avatarRepository = avatarRepository ?? LocalAvatarRepository() {
     _loadUserAvatars();
   }
 
@@ -34,10 +34,17 @@ class AvatarSelectionViewModel extends ChangeNotifier {
   int get selectedIndex => _selectedIndex;
   bool get isLoading => _isLoading;
   List<AvatarItem> get userAvatars => _userAvatars;
-  List<AvatarTemplate> get currentTemplates => AvatarTemplates.byGender(_isBoysTab ? 'boy' : 'girl');
-  List<AvatarItem> get currentAvatars => _userAvatars.where((a) => a.gender == (_isBoysTab ? 'boy' : 'girl')).toList();
-  bool get hasAvatars => currentAvatars.isNotEmpty;
-  AvatarItem? get selectedAvatar => hasAvatars ? currentAvatars[_selectedIndex] : null;
+  List<AvatarTemplate> get currentTemplates =>
+      AvatarTemplates.byGender(_isBoysTab ? 'boy' : 'girl');
+  List<AvatarItem> get currentAvatars => _userAvatars
+      .where((a) => a.gender == (_isBoysTab ? 'boy' : 'girl'))
+      .toList();
+  bool get hasAvatars => _userAvatars.isNotEmpty; // Any avatar in any tab
+  bool get hasAvatarsInCurrentTab => currentAvatars.isNotEmpty;
+  AvatarItem? get selectedAvatar =>
+      hasAvatarsInCurrentTab ? currentAvatars[_selectedIndex] : null;
+  AvatarItem? get lastCreatedAvatar =>
+      _userAvatars.isNotEmpty ? _userAvatars.last : null;
 
   /// Get available templates that haven't been used yet
   List<AvatarTemplate> getAvailableTemplates(String gender) {
@@ -46,7 +53,7 @@ class AvatarSelectionViewModel extends ChangeNotifier {
         .where((a) => a.gender == gender)
         .map((a) => a.templateName)
         .toSet();
-    
+
     return templates.where((t) => !usedTemplateNames.contains(t.name)).toList();
   }
 
@@ -61,6 +68,10 @@ class AvatarSelectionViewModel extends ChangeNotifier {
     notifyListeners();
 
     _userAvatars = await _avatarRepository.loadAvatars();
+    debugPrint('📊 [Avatar] Loaded ${_userAvatars.length} avatars');
+    for (var avatar in _userAvatars) {
+      debugPrint('  - ${avatar.displayName} (${avatar.gender}, ${avatar.id})');
+    }
 
     _isLoading = false;
     notifyListeners();
@@ -124,16 +135,55 @@ class AvatarSelectionViewModel extends ChangeNotifier {
 
   /// Confirm hero selection and navigate to home
   Future<String> confirmHero() async {
-    if (selectedAvatar == null) {
-      return AppRouter.onboardingAvatar; // Stay on same screen if no avatar selected
-    }
+    debugPrint('🎯 [ViewModel] ========== confirmHero START ==========');
+    try {
+      debugPrint(
+        '🎯 [ViewModel] confirmHero called, avatars count: ${_userAvatars.length}',
+      );
 
-    final avatar = selectedAvatar!;
-    final existingHero = await _heroRepository.loadHeroProfile(avatar.id);
+      _isLoading = true;
+      notifyListeners();
 
-    if (existingHero != null) {
-      await _heroRepository.setLastSelectedHero(avatar.id);
-    } else {
+      // If no avatars exist, user MUST create one. Prevent continuing.
+      if (_userAvatars.isEmpty) {
+        debugPrint('⚠️ [ViewModel] No avatars found, blocking confirmation.');
+        _isLoading = false;
+        notifyListeners();
+        return AppRouter.onboardingAvatar;
+      }
+
+      // Choose avatar: selected from current tab, or last created, or first available
+      debugPrint('🔍 [ViewModel] Finding avatar to use...');
+      debugPrint(
+        '🔍 [ViewModel] selectedAvatar: ${selectedAvatar?.displayName}',
+      );
+      debugPrint(
+        '🔍 [ViewModel] lastCreatedAvatar: ${lastCreatedAvatar?.displayName}',
+      );
+
+      AvatarItem? avatar =
+          selectedAvatar ??
+          lastCreatedAvatar ??
+          (_userAvatars.isNotEmpty ? _userAvatars.first : null);
+
+      if (avatar == null) {
+        debugPrint(
+          '❌ [ViewModel] CRITICAL: No avatar available after creation!',
+        );
+        debugPrint('❌ [ViewModel] _userAvatars.length: ${_userAvatars.length}');
+        debugPrint('❌ [ViewModel] selectedAvatar: $selectedAvatar');
+        debugPrint('❌ [ViewModel] lastCreatedAvatar: $lastCreatedAvatar');
+        _isLoading = false;
+        notifyListeners();
+        return AppRouter.onboardingAvatar;
+      }
+
+      debugPrint(
+        '✅ [ViewModel] Selected avatar: ${avatar.displayName} (${avatar.id})',
+      );
+
+      // Create HeroProfile
+      debugPrint('💾 [ViewModel] Creating HeroProfile...');
       final newHero = HeroProfile(
         id: avatar.id,
         name: avatar.displayName,
@@ -144,11 +194,35 @@ class AvatarSelectionViewModel extends ChangeNotifier {
         quests: [],
       );
 
-      await _heroRepository.saveHeroProfile(newHero);
-      await _heroRepository.setLastSelectedHero(avatar.id);
-    }
+      debugPrint('💾 [ViewModel] Saving hero to repository...');
+      final savedHero = await _heroRepository.saveHeroProfile(newHero);
+      debugPrint('✅ [ViewModel] Hero saved with ID: ${savedHero.id}');
 
-    // Return the route to navigate to
-    return '${AppRouter.home}?hero=${avatar.id}';
+      debugPrint('💾 [ViewModel] Setting last selected hero...');
+      await _heroRepository.setLastSelectedHero(savedHero.id);
+      debugPrint('✅ [ViewModel] Last selected hero set');
+
+      _isLoading = false;
+      notifyListeners();
+
+      // Return the route to navigate to
+      final route = '${AppRouter.home}?hero=${savedHero.id}';
+      debugPrint('🚀 [ViewModel] Returning route: $route');
+      debugPrint(
+        '🎯 [ViewModel] ========== confirmHero END (SUCCESS) ==========',
+      );
+      return route;
+    } catch (e, stackTrace) {
+      debugPrint(
+        '❌ [ViewModel] ========== EXCEPTION in confirmHero ==========',
+      );
+      debugPrint('❌ [ViewModel] Error in confirmHero: $e');
+      debugPrint('❌ [ViewModel] Error type: ${e.runtimeType}');
+      debugPrint('❌ [ViewModel] Stack trace: $stackTrace');
+      debugPrint('❌ [ViewModel] ========== confirmHero END (ERROR) ==========');
+      _isLoading = false;
+      notifyListeners();
+      return AppRouter.onboardingAvatar;
+    }
   }
 }
