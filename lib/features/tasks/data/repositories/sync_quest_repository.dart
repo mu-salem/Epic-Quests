@@ -1,17 +1,10 @@
 import '../../../../core/services/connectivity_service.dart';
-import '../../../../core/services/sync_service.dart';
+import '../../../../core/services/sync/sync_service.dart';
 import '../../model/quest.dart';
 import '../local/local_quest_repository.dart';
 import '../remote/api_quest_repository.dart';
 import '../repositories/quest_repository.dart';
 
-/// Offline-First Quest Repository
-///
-/// Strategy:
-/// - Always read from local Hive storage (fast, works offline)
-/// - Write to local first, then sync to API when online
-/// - Queue offline actions for later sync
-/// - Fetch from API and update local cache when online
 class SyncQuestRepository implements QuestRepository {
   final LocalQuestRepository _localRepository;
   final ApiQuestRepository _apiRepository;

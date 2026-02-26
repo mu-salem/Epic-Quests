@@ -1,10 +1,10 @@
 import 'dart:async';
+import 'package:epicquests/core/network/api_client.dart';
+import 'package:epicquests/core/services/connectivity_service.dart';
+import 'package:epicquests/core/storage/hive/hive_boxes.dart';
 import 'package:flutter/foundation.dart';
 import 'package:hive/hive.dart';
-import '../models/pending_action.dart';
-import '../network/api_client.dart';
-import '../storage/hive/hive_boxes.dart';
-import 'connectivity_service.dart';
+import 'models/pending_action.dart';
 
 /// Service to manage offline data sync - fixed version
 class SyncService extends ChangeNotifier {

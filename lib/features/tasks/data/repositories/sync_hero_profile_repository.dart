@@ -1,6 +1,6 @@
 import 'package:flutter/foundation.dart';
 import '../../../../core/services/connectivity_service.dart';
-import '../../../../core/services/sync_service.dart';
+import '../../../../core/services/sync/sync_service.dart';
 import '../../model/hero_profile.dart';
 import '../local/local_hero_profile_repository.dart';
 import '../remote/api_hero_profile_repository.dart';

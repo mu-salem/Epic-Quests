@@ -1,5 +1,5 @@
 import 'package:hive_flutter/hive_flutter.dart';
-import '../../models/pending_action.dart';
+import '../../services/sync/models/pending_action.dart';
 import '../../../features/tasks/model/hero_profile.dart';
 import '../../../features/tasks/model/quest.dart';
 import '../../../features/pomodoro/model/pomodoro_session.dart';

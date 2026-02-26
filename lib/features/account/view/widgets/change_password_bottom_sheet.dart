@@ -3,11 +3,11 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 
 import '../../../../core/theme/app_colors.dart';
-import '../../../../core/theme/app_text_styles.dart';
 import '../../../../core/widgets/primary_button.dart';
 import '../../../../core/widgets/spacing_widgets.dart';
-import '../../../auth/view/widgets/auth_text_field.dart';
 import '../../viewmodel/account_viewmodel.dart';
+import 'change_password_header.dart';
+import 'password_text_field.dart';
 
 class ChangePasswordBottomSheet extends StatefulWidget {
   const ChangePasswordBottomSheet({super.key});
@@ -21,10 +21,6 @@ class _ChangePasswordBottomSheetState extends State<ChangePasswordBottomSheet> {
   final _oldPasswordController = TextEditingController();
   final _newPasswordController = TextEditingController();
   final _confirmPasswordController = TextEditingController();
-
-  bool _obscureOld = true;
-  bool _obscureNew = true;
-  bool _obscureConfirm = true;
 
   @override
   void dispose() {
@@ -96,31 +92,7 @@ class _ChangePasswordBottomSheetState extends State<ChangePasswordBottomSheet> {
             mainAxisSize: MainAxisSize.min,
             children: [
               // Header
-              Container(
-                padding: EdgeInsets.all(20.w),
-                decoration: const BoxDecoration(
-                  border: Border(
-                    bottom: BorderSide(color: AppColors.border, width: 2),
-                  ),
-                ),
-                child: Row(
-                  children: [
-                    Text(
-                      'CHANGE PASSWORD',
-                      style: AppTextStyles.h3.copyWith(color: AppColors.accent),
-                    ),
-                    const Spacer(),
-                    GestureDetector(
-                      onTap: () => Navigator.of(context).pop(),
-                      child: Icon(
-                        Icons.close,
-                        color: AppColors.textSecondary,
-                        size: 24.sp,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
+              const ChangePasswordHeader(),
 
               Expanded(
                 child: SingleChildScrollView(
@@ -135,61 +107,19 @@ class _ChangePasswordBottomSheetState extends State<ChangePasswordBottomSheet> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      AuthTextField(
+                      PasswordTextField(
                         controller: _oldPasswordController,
                         label: 'Old Password',
-                        obscureText: _obscureOld,
-                        suffixIcon: IconButton(
-                          icon: Icon(
-                            _obscureOld
-                                ? Icons.visibility_off
-                                : Icons.visibility,
-                            color: AppColors.textMuted,
-                          ),
-                          onPressed: () {
-                            setState(() {
-                              _obscureOld = !_obscureOld;
-                            });
-                          },
-                        ),
                       ),
                       HeightSpacer(16),
-                      AuthTextField(
+                      PasswordTextField(
                         controller: _newPasswordController,
                         label: 'New Password',
-                        obscureText: _obscureNew,
-                        suffixIcon: IconButton(
-                          icon: Icon(
-                            _obscureNew
-                                ? Icons.visibility_off
-                                : Icons.visibility,
-                            color: AppColors.textMuted,
-                          ),
-                          onPressed: () {
-                            setState(() {
-                              _obscureNew = !_obscureNew;
-                            });
-                          },
-                        ),
                       ),
                       HeightSpacer(16),
-                      AuthTextField(
+                      PasswordTextField(
                         controller: _confirmPasswordController,
                         label: 'Confirm New Password',
-                        obscureText: _obscureConfirm,
-                        suffixIcon: IconButton(
-                          icon: Icon(
-                            _obscureConfirm
-                                ? Icons.visibility_off
-                                : Icons.visibility,
-                            color: AppColors.textMuted,
-                          ),
-                          onPressed: () {
-                            setState(() {
-                              _obscureConfirm = !_obscureConfirm;
-                            });
-                          },
-                        ),
                       ),
                       HeightSpacer(24),
                     ],

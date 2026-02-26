@@ -8,7 +8,7 @@ import 'core/routing/app_router.dart';
 import 'core/network/api_client.dart';
 import 'core/services/audio_service.dart';
 import 'core/services/connectivity_service.dart';
-import 'core/services/sync_service.dart';
+import 'core/services/sync/sync_service.dart';
 import 'core/theme/app_theme.dart';
 import 'features/tasks/data/repositories/sync_hero_profile_repository.dart';
 import 'features/tasks/viewmodel/tasks_viewmodel.dart';
