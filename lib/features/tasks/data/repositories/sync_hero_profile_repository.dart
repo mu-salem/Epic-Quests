@@ -6,13 +6,6 @@ import '../local/local_hero_profile_repository.dart';
 import '../remote/api_hero_profile_repository.dart';
 import '../repositories/hero_profile_repository.dart';
 
-/// Offline-First Hero Profile Repository
-///
-/// Strategy:
-/// - Always read from local Hive storage (fast, works offline)
-/// - Write to local first, then sync to API when online
-/// - Queue offline actions for later sync
-/// - Fetch from API and update local cache when online
 class SyncHeroProfileRepository implements HeroProfileRepository {
   final LocalHeroProfileRepository _localRepository;
   final ApiHeroProfileRepository _apiRepository;

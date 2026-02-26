@@ -267,22 +267,40 @@ class TasksViewModel extends ChangeNotifier {
       finalQuest = quest.copyWith(recurrenceId: recurringQuestId);
     }
 
-    debugPrint('✅ [TasksVM] Adding quest to hero profile via Sync Repo...');
-    final syncedQuest = await _questRepository.addQuest(
-      finalQuest,
-      _heroProfile!.id,
-    );
+    debugPrint('✅ [TasksVM] Adding quest to local state optimistically...');
 
-    final updatedQuests = [syncedQuest, ..._heroProfile!.quests];
+    // Optimistic UI Update
+    final updatedQuests = [finalQuest, ..._heroProfile!.quests];
     _heroProfile = _heroProfile!.copyWith(quests: updatedQuests);
     _invalidateCache();
-    await _saveHeroProfile();
 
-    debugPrint(
-      '✅ [TasksVM] Quest added successfully. Total quests: ${_heroProfile!.quests.length}',
-    );
     AudioService().playSfx(AppSound.questAdd);
     notifyListeners();
+
+    // Background process for repo syncing without blocking UI
+    _saveHeroProfile().then((_) {
+      _questRepository
+          .addQuest(finalQuest, _heroProfile!.id)
+          .then((syncedQuest) {
+            // If ID changed during sync (e.g local generated -> mongo ID), update local references
+            if (syncedQuest.id != finalQuest.id && _heroProfile != null) {
+              final currentQuests = List<Quest>.from(_heroProfile!.quests);
+              final index = currentQuests.indexWhere(
+                (q) => q.id == finalQuest.id,
+              );
+              if (index != -1) {
+                currentQuests[index] = syncedQuest;
+                _heroProfile = _heroProfile!.copyWith(quests: currentQuests);
+                _invalidateCache();
+                _saveHeroProfile();
+                notifyListeners();
+              }
+            }
+          })
+          .catchError((e) {
+            debugPrint('❌ [TasksVM] Background sync failed: $e');
+          });
+    });
   }
 
   /// Update an existing quest
@@ -296,12 +314,15 @@ class TasksViewModel extends ChangeNotifier {
       updatedQuests[index] = updatedQuest;
       _heroProfile = _heroProfile!.copyWith(quests: updatedQuests);
       _invalidateCache();
-      await _saveHeroProfile();
-
-      // Sync individual quest update
-      await _questRepository.updateQuest(updatedQuest);
 
       notifyListeners();
+
+      // Sync individual quest update in background
+      _saveHeroProfile().then((_) {
+        _questRepository.updateQuest(updatedQuest).catchError((e) {
+          debugPrint('❌ [TasksVM] Background sync failed: $e');
+        });
+      });
     }
   }
 
@@ -314,13 +335,16 @@ class TasksViewModel extends ChangeNotifier {
         .toList();
     _heroProfile = _heroProfile!.copyWith(quests: updatedQuests);
     _invalidateCache();
-    await _saveHeroProfile();
-
-    // Sync quest deletion
-    await _questRepository.deleteQuest(questId);
 
     AudioService().playSfx(AppSound.questDelete);
     notifyListeners();
+
+    // Sync quest deletion in background
+    _saveHeroProfile().then((_) {
+      _questRepository.deleteQuest(questId).catchError((e) {
+        debugPrint('❌ [TasksVM] Background sync failed: $e');
+      });
+    });
   }
 
   /// Toggle quest completion status
@@ -353,22 +377,28 @@ class TasksViewModel extends ChangeNotifier {
       }
 
       _invalidateCache();
-      await _saveHeroProfile();
-
-      // Sync quest completion status securely matching the APIs patches
-      final repo = _questRepository;
-      if (repo is SyncQuestRepository) {
-        if (isBeingCompleted) {
-          await repo.completeQuest(questId);
-        } else {
-          await repo.uncompleteQuest(questId);
-        }
-      } else {
-        // Fallback if not using offline first repository
-        await _questRepository.updateQuest(updatedQuests[index]);
-      }
-
       notifyListeners();
+
+      _saveHeroProfile().then((_) {
+        // Sync quest completion status securely matching the APIs patches in background
+        final repo = _questRepository;
+        if (repo is SyncQuestRepository) {
+          if (isBeingCompleted) {
+            repo
+                .completeQuest(questId)
+                .catchError((e) => debugPrint('Sync error: $e'));
+          } else {
+            repo
+                .uncompleteQuest(questId)
+                .catchError((e) => debugPrint('Sync error: $e'));
+          }
+        } else {
+          // Fallback if not using offline first repository
+          _questRepository
+              .updateQuest(updatedQuests[index])
+              .catchError((e) => debugPrint('Sync error: $e'));
+        }
+      });
     }
   }
 

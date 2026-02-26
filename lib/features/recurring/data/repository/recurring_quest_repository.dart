@@ -1,5 +1,5 @@
-import '../../tasks/model/recurring_quest.dart';
-import '../../../core/services/recurring_quest_service.dart';
+import '../../../tasks/model/recurring_quest.dart';
+import '../../../../core/services/recurring_quest_service.dart';
 
 /// Thin repository wrapper around RecurringQuestService for UI usage
 class RecurringQuestRepository {

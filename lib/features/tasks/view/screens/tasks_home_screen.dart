@@ -78,13 +78,6 @@ class _TasksHomeScreenState extends State<TasksHomeScreen>
   void _handleQuestToggle(String questId) {
     final viewModel = context.read<TasksViewModel>();
     viewModel.toggleQuestCompletion(questId);
-
-    // Switch to appropriate tab based on new status
-    if (viewModel.wasQuestJustCompleted(questId)) {
-      _tabController.animateTo(1);
-    } else {
-      _tabController.animateTo(0);
-    }
   }
 
   /// Handle quest tap (show edit modal)
