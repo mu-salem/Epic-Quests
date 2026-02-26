@@ -6,6 +6,10 @@ import '../../../../core/resources/app_icons.dart';
 import '../../../../core/routing/app_router.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../tasks/model/quest.dart';
+import '../widgets/quest_action_button.dart';
+import '../widgets/quest_info_row.dart';
+import '../widgets/quest_section_card.dart';
+import '../widgets/quest_status_badge.dart';
 
 class QuestDetailsScreen extends StatelessWidget {
   final Quest quest;
@@ -76,14 +80,14 @@ class QuestDetailsScreen extends StatelessWidget {
                 // ─── Status Badge ─────────────────────────
                 Row(
                   children: [
-                    _Badge(
+                    QuestStatusBadge(
                       text: quest.isCompleted ? 'COMPLETED' : 'ACTIVE',
                       color: quest.isCompleted
                           ? AppColors.success
                           : AppColors.primary,
                     ),
                     SizedBox(width: 8.w),
-                    _Badge(
+                    QuestStatusBadge(
                       text: quest.priority.label.toUpperCase(),
                       color: _priorityColor(quest.priority),
                     ),
@@ -93,7 +97,7 @@ class QuestDetailsScreen extends StatelessWidget {
                 SizedBox(height: 20.h),
 
                 // ─── Description Card ─────────────────────
-                _SectionCard(
+                QuestSectionCard(
                   title: 'DESCRIPTION',
                   child: Text(
                     quest.description?.isEmpty ?? true
@@ -111,11 +115,11 @@ class QuestDetailsScreen extends StatelessWidget {
                 SizedBox(height: 12.h),
 
                 // ─── Dates Card ───────────────────────────
-                _SectionCard(
+                QuestSectionCard(
                   title: 'TIMELINE',
                   child: Column(
                     children: [
-                      _InfoRow(
+                      QuestInfoRow(
                         iconWidget: AppIcons.homeQuest(
                           width: 20.w,
                           height: 20.h,
@@ -127,7 +131,7 @@ class QuestDetailsScreen extends StatelessWidget {
                       ),
                       if (quest.deadline != null) ...[
                         SizedBox(height: 12.h),
-                        _InfoRow(
+                        QuestInfoRow(
                           iconWidget: AppIcons.urgentQuest(
                             width: 20.w,
                             height: 20.h,
@@ -141,7 +145,7 @@ class QuestDetailsScreen extends StatelessWidget {
                       ],
                       if (quest.completedAt != null) ...[
                         SizedBox(height: 12.h),
-                        _InfoRow(
+                        QuestInfoRow(
                           iconWidget: AppIcons.completedQuest(
                             width: 20.w,
                             height: 20.h,
@@ -160,11 +164,11 @@ class QuestDetailsScreen extends StatelessWidget {
                 SizedBox(height: 12.h),
 
                 // ─── XP and Pomodoro Card ─────────────────
-                _SectionCard(
+                QuestSectionCard(
                   title: 'PROGRESS',
                   child: Column(
                     children: [
-                      _InfoRow(
+                      QuestInfoRow(
                         iconWidget: AppIcons.rewardMedal(
                           width: 20.w,
                           height: 20.h,
@@ -175,7 +179,7 @@ class QuestDetailsScreen extends StatelessWidget {
                       ),
                       if (quest.pomodorosCompleted > 0) ...[
                         SizedBox(height: 12.h),
-                        _InfoRow(
+                        QuestInfoRow(
                           iconWidget: AppIcons.pomodoroSession(
                             width: 20.w,
                             height: 20.h,
@@ -194,7 +198,7 @@ class QuestDetailsScreen extends StatelessWidget {
                 // ─── Actions ─────────────────────────────
                 if (!quest.isCompleted) ...[
                   // Start Pomodoro
-                  _ActionButton(
+                  QuestActionButton(
                     iconWidget: AppIcons.pomodoroTimer(
                       width: 24.w,
                       height: 24.h,
@@ -210,7 +214,7 @@ class QuestDetailsScreen extends StatelessWidget {
                 ],
 
                 // Back
-                _ActionButton(
+                QuestActionButton(
                   iconWidget: AppIcons.questScroll(width: 24.w, height: 24.h),
                   text: 'BACK TO QUESTS',
                   color: AppColors.primary,
@@ -257,160 +261,5 @@ class QuestDetailsScreen extends StatelessWidget {
     if (diff.isNegative) return AppColors.error;
     if (diff.inHours < 24) return AppColors.warning;
     return AppColors.textSecondary;
-  }
-}
-
-class _Badge extends StatelessWidget {
-  final String text;
-  final Color color;
-
-  const _Badge({required this.text, required this.color});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 4.h),
-      decoration: BoxDecoration(
-        color: color.withValues(alpha: 0.2),
-        borderRadius: BorderRadius.circular(4.r),
-        border: Border.all(color: color.withValues(alpha: 0.5)),
-      ),
-      child: Text(
-        text,
-        style: TextStyle(
-          fontFamily: 'PressStart2P',
-          fontSize: 8.sp,
-          color: color,
-        ),
-      ),
-    );
-  }
-}
-
-class _SectionCard extends StatelessWidget {
-  final String title;
-  final Widget child;
-
-  const _SectionCard({required this.title, required this.child});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: EdgeInsets.all(16.w),
-      decoration: BoxDecoration(
-        color: AppColors.backgroundSoft,
-        borderRadius: BorderRadius.circular(8.r),
-        border: Border.all(color: AppColors.border),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            '[ $title ]',
-            style: TextStyle(
-              fontFamily: 'PressStart2P',
-              fontSize: 6.sp,
-              color: AppColors.primary,
-            ),
-          ),
-          SizedBox(height: 12.h),
-          child,
-        ],
-      ),
-    );
-  }
-}
-
-class _InfoRow extends StatelessWidget {
-  final Widget iconWidget;
-  final String label;
-  final String value;
-  final Color? valueColor;
-
-  const _InfoRow({
-    required this.iconWidget,
-    required this.label,
-    required this.value,
-    this.valueColor,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: [
-        iconWidget,
-        SizedBox(width: 12.w),
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                label.toUpperCase(),
-                style: TextStyle(
-                  fontFamily: 'PressStart2P',
-                  fontSize: 5.sp,
-                  color: AppColors.textMuted,
-                ),
-              ),
-              SizedBox(height: 2.h),
-              Text(
-                value,
-                style: TextStyle(
-                  fontFamily: 'VT323',
-                  fontSize: 14.sp,
-                  color: valueColor ?? AppColors.textPrimary,
-                ),
-              ),
-            ],
-          ),
-        ),
-      ],
-    );
-  }
-}
-
-class _ActionButton extends StatelessWidget {
-  final Widget iconWidget;
-  final String text;
-  final Color color;
-  final VoidCallback onTap;
-
-  const _ActionButton({
-    required this.iconWidget,
-    required this.text,
-    required this.color,
-    required this.onTap,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        width: double.infinity,
-        padding: EdgeInsets.symmetric(vertical: 16.h),
-        decoration: BoxDecoration(
-          color: color.withValues(alpha: 0.15),
-          borderRadius: BorderRadius.circular(6.r),
-          border: Border.all(color: color.withValues(alpha: 0.6), width: 1.5),
-        ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            iconWidget,
-            SizedBox(width: 12.w),
-            Text(
-              text,
-              style: TextStyle(
-                fontFamily: 'PressStart2P',
-                fontSize: 7.sp,
-                color: color,
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
   }
 }
