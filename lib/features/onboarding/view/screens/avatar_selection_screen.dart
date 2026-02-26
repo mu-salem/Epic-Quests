@@ -1,18 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
-import '../../../../core/widgets/spacing_widgets.dart';
-import '../../../../core/widgets/primary_button.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../viewmodel/avatar_selection_viewmodel.dart';
 import '../../model/avatar_item.dart';
 import '../widgets/avatar/avatar_background.dart';
-import '../widgets/avatar/avatar_header_card.dart';
-import '../widgets/avatar/avatar_tabs.dart';
-import '../widgets/avatar/avatar_page_view.dart';
-import '../widgets/common/dots_indicator.dart';
+import 'avatar_selection_content.dart';
 import '../widgets/bottom_sheets/add_avatar_bottom_sheet.dart';
 import '../widgets/bottom_sheets/edit_avatar_bottom_sheet.dart';
 
@@ -129,81 +123,21 @@ class _AvatarSelectionScreenState extends State<AvatarSelectionScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final sliderHeight = 240.h;
-
     return ChangeNotifierProvider.value(
       value: _viewModel,
       child: Scaffold(
         backgroundColor: AppColors.transparent,
-
         body: Stack(
           children: [
             // Background with blur
             const Positioned.fill(child: AvatarBackground()),
 
             // Main content
-            SafeArea(
-              child: Padding(
-                padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
-                child: Column(
-                  children: [
-                    HeightSpacer(8),
-
-                    const AvatarHeaderCard(),
-
-                    HeightSpacer(24),
-
-                    Consumer<AvatarSelectionViewModel>(
-                      builder: (context, viewModel, _) => AvatarTabs(
-                        isBoys: viewModel.isBoysTab,
-                        onTabChanged: viewModel.switchTab,
-                      ),
-                    ),
-
-                    HeightSpacer(24),
-
-                    // Avatar PageView with loading and empty states
-                    AvatarPageView(
-                      pageController: _pageController,
-                      height: sliderHeight,
-                      onLongPress: _showEditAvatarSheet,
-                      onCreateTap: _showAddAvatarSheet,
-                    ),
-
-                    HeightSpacer(16),
-
-                    // Dots Indicator
-                    Consumer<AvatarSelectionViewModel>(
-                      builder: (context, viewModel, _) {
-                        if (!viewModel.hasAvatars) {
-                          return const SizedBox.shrink();
-                        }
-                        return DotsIndicator(
-                          count: viewModel.currentAvatars.length + 1,
-                          // Index + 1 because UI page index 0 is "Create"
-                          index: viewModel.selectedIndex + 1,
-                        );
-                      },
-                    ),
-
-                    const Spacer(),
-
-                    // Confirm button
-                    Consumer<AvatarSelectionViewModel>(
-                      builder: (context, viewModel, _) => PrimaryButton(
-                        text: 'CONFIRM HERO',
-                        width: double.infinity,
-                        onPressed: viewModel.isLoading || !viewModel.hasAvatars
-                            ? null
-                            : _onConfirm,
-                        isLoading: viewModel.isLoading,
-                      ),
-                    ),
-
-                    HeightSpacer(12),
-                  ],
-                ),
-              ),
+            AvatarSelectionContent(
+              pageController: _pageController,
+              onShowEditAvatarSheet: _showEditAvatarSheet,
+              onShowAddAvatarSheet: _showAddAvatarSheet,
+              onConfirm: _onConfirm,
             ),
           ],
         ),

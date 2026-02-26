@@ -8,7 +8,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../avatar/avatar_preview_card.dart';
 import 'avatar_name_section.dart';
 import 'avatar_description_field.dart';
-import '../common/delete_avatar_button.dart';
+import 'edit_avatar_actions.dart';
 
 class EditAvatarBottomSheet extends StatefulWidget {
   const EditAvatarBottomSheet({
@@ -72,8 +72,6 @@ class _EditAvatarBottomSheetState extends State<EditAvatarBottomSheet> {
 
   @override
   Widget build(BuildContext context) {
-    final bottomPadding = MediaQuery.of(context).viewInsets.bottom;
-    final bottomSafeArea = MediaQuery.of(context).padding.bottom;
     return DraggableScrollableSheet(
       initialChildSize: 0.6,
       minChildSize: 0.4,
@@ -163,39 +161,9 @@ class _EditAvatarBottomSheetState extends State<EditAvatarBottomSheet> {
               ),
 
               // Fixed Action Area
-              Container(
-                padding: EdgeInsets.only(
-                  left: 20.w,
-                  right: 20.w,
-                  top: 10.h,
-                  bottom: 20.h + bottomPadding + bottomSafeArea,
-                ),
-                decoration: BoxDecoration(
-                  color: AppColors.backgroundDark,
-                  border: Border(
-                    top: BorderSide(color: AppColors.border, width: 2),
-                  ),
-                ),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    // Update Button
-                    PrimaryButton(
-                      text: 'UPDATE AVATAR',
-                      width: double.infinity,
-                      onPressed: _handleUpdate,
-                      backgroundColor: AppColors.panelLight,
-                      borderColor: AppColors.accent,
-                      shadowColor: AppColors.accent,
-                      textColor: AppColors.backgroundDark,
-                    ),
-
-                    HeightSpacer(12),
-
-                    // Delete Button
-                    DeleteAvatarButton(onPressed: _handleDelete),
-                  ],
-                ),
+              EditAvatarActions(
+                onUpdate: _handleUpdate,
+                onDelete: _handleDelete,
               ),
             ],
           ),

@@ -8,6 +8,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../avatar/avatar_template_grid.dart';
 import 'avatar_name_section.dart';
 import 'avatar_description_field.dart';
+import 'add_avatar_actions.dart';
 
 class AddAvatarBottomSheet extends StatefulWidget {
   const AddAvatarBottomSheet({
@@ -57,8 +58,6 @@ class _AddAvatarBottomSheetState extends State<AddAvatarBottomSheet> {
   @override
   Widget build(BuildContext context) {
     final selectedTemplate = widget.templates[_selectedTemplateIndex];
-    final bottomPadding = MediaQuery.of(context).viewInsets.bottom;
-    final bottomSafeArea = MediaQuery.of(context).padding.bottom;
 
     return DraggableScrollableSheet(
       initialChildSize: 0.6,
@@ -167,29 +166,7 @@ class _AddAvatarBottomSheetState extends State<AddAvatarBottomSheet> {
               ),
 
               // Fixed Action Area
-              Container(
-                padding: EdgeInsets.only(
-                  left: 20.w,
-                  right: 20.w,
-                  top: 10.h,
-                  bottom: 20.h + bottomPadding + bottomSafeArea,
-                ),
-                decoration: BoxDecoration(
-                  color: AppColors.backgroundDark,
-                  border: Border(
-                    top: BorderSide(color: AppColors.border, width: 2),
-                  ),
-                ),
-                child: PrimaryButton(
-                  text: 'CREATE AVATAR',
-                  width: double.infinity,
-                  onPressed: _handleCreate,
-                  backgroundColor: AppColors.panelLight,
-                  borderColor: AppColors.accent,
-                  shadowColor: AppColors.accent,
-                  textColor: AppColors.backgroundDark,
-                ),
-              ),
+              AddAvatarActions(onCreate: _handleCreate),
             ],
           ),
         );
