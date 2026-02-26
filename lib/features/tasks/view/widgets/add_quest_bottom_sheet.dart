@@ -8,6 +8,7 @@ import '../../../../core/widgets/spacing_widgets.dart';
 import '../../../../core/theme/app_text_styles.dart';
 import '../../model/quest.dart';
 import '../../viewmodel/add_quest_viewmodel.dart';
+import '../dialogs/delete_quest_dialog.dart';
 import 'form_fields/form_fields.dart';
 
 class AddQuestBottomSheet extends StatefulWidget {
@@ -105,46 +106,7 @@ class _AddQuestBottomSheetState extends State<AddQuestBottomSheet> {
   }
 
   Future<void> _deleteQuest() async {
-    final confirmed = await showDialog<bool>(
-      context: context,
-      builder: (context) => AlertDialog(
-        backgroundColor: AppColors.panelDark,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(12.r),
-          side: const BorderSide(color: AppColors.border, width: 2),
-        ),
-        title: Text(
-          'Delete Quest?',
-          style: AppTextStyles.h3.copyWith(color: AppColors.textPrimary),
-        ),
-        content: Text(
-          'Are you sure you want to delete this quest? This action cannot be undone.',
-          style: AppTextStyles.bodyM.copyWith(color: AppColors.textSecondary),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(false),
-            child: Text(
-              'CANCEL',
-              style: AppTextStyles.h4.copyWith(
-                color: AppColors.textMuted,
-                fontSize: 13.sp,
-              ),
-            ),
-          ),
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(true),
-            child: Text(
-              'DELETE',
-              style: AppTextStyles.h4.copyWith(
-                color: AppColors.error,
-                fontSize: 13.sp,
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
+    final confirmed = await showDeleteQuestDialog(context);
 
     if (confirmed == true && mounted) {
       Navigator.of(context).pop('delete');
