@@ -87,10 +87,6 @@ class QuestDetailsScreen extends StatelessWidget {
                       text: quest.priority.label.toUpperCase(),
                       color: _priorityColor(quest.priority),
                     ),
-                    if (quest.recurrenceId != null) ...[
-                      SizedBox(width: 8.w),
-                      _Badge(text: '🔄 RECURRING', color: AppColors.indigo),
-                    ],
                   ],
                 ),
 

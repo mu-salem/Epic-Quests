@@ -25,7 +25,6 @@ class QuestAdapter extends TypeAdapter<Quest> {
       isCompleted: fields[5] as bool,
       completedAt: fields[6] as DateTime?,
       createdAt: fields[7] as DateTime?,
-      recurrenceId: fields[8] as String?,
       pomodorosCompleted: fields[9] as int,
     );
   }
@@ -33,7 +32,7 @@ class QuestAdapter extends TypeAdapter<Quest> {
   @override
   void write(BinaryWriter writer, Quest obj) {
     writer
-      ..writeByte(10)
+      ..writeByte(9)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
@@ -50,8 +49,6 @@ class QuestAdapter extends TypeAdapter<Quest> {
       ..write(obj.completedAt)
       ..writeByte(7)
       ..write(obj.createdAt)
-      ..writeByte(8)
-      ..write(obj.recurrenceId)
       ..writeByte(9)
       ..write(obj.pomodorosCompleted);
   }

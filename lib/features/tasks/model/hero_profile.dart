@@ -1,7 +1,6 @@
 import 'package:hive/hive.dart';
 import '../../../core/services/xp_service.dart';
 import 'quest.dart';
-import 'recurring_quest.dart';
 
 part 'hero_profile.g.dart';
 
@@ -43,9 +42,6 @@ class HeroProfile {
   @HiveField(11)
   final DateTime? lastActivityDate;
 
-  @HiveField(12)
-  final List<RecurringQuest> recurringQuests;
-
   HeroProfile({
     required this.id,
     required this.name,
@@ -59,7 +55,6 @@ class HeroProfile {
     this.totalCompletedQuests = 0,
     DateTime? createdAt,
     this.lastActivityDate,
-    this.recurringQuests = const [],
   }) : createdAt = createdAt ?? DateTime.now();
 
   int get maxXP => XPService.calculateMaxXP(level);
@@ -133,7 +128,6 @@ class HeroProfile {
     int? totalCompletedQuests,
     DateTime? createdAt,
     DateTime? lastActivityDate,
-    List<RecurringQuest>? recurringQuests,
   }) {
     return HeroProfile(
       id: id ?? this.id,
@@ -148,7 +142,6 @@ class HeroProfile {
       totalCompletedQuests: totalCompletedQuests ?? this.totalCompletedQuests,
       createdAt: createdAt ?? this.createdAt,
       lastActivityDate: lastActivityDate ?? this.lastActivityDate,
-      recurringQuests: recurringQuests ?? this.recurringQuests,
     );
   }
 
@@ -166,7 +159,6 @@ class HeroProfile {
       'total_completed_quests': totalCompletedQuests,
       'created_at': createdAt.toIso8601String(),
       'last_activity_date': lastActivityDate?.toIso8601String(),
-      'recurring_quests': recurringQuests.map((q) => q.toJson()).toList(),
     };
   }
 
@@ -226,11 +218,6 @@ class HeroProfile {
                   as String,
             )
           : null,
-      recurringQuests:
-          (json['recurring_quests'] as List<dynamic>?)
-              ?.map((q) => RecurringQuest.fromJson(q as Map<String, dynamic>))
-              .toList() ??
-          [],
     );
   }
 }

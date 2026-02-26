@@ -1,6 +1,5 @@
 import 'package:flutter/foundation.dart';
 import '../model/quest.dart';
-import '../model/recurring_quest.dart';
 
 /// ViewModel for Add/Edit Quest functionality
 ///
@@ -15,7 +14,6 @@ class AddQuestViewModel extends ChangeNotifier {
   String? _description;
   QuestPriority _priority = QuestPriority.medium;
   DateTime? _deadline;
-  RecurrenceType? _recurrenceType;
 
   // Validation
   String? _titleError;
@@ -39,7 +37,6 @@ class AddQuestViewModel extends ChangeNotifier {
   String? get description => _description;
   QuestPriority get priority => _priority;
   DateTime? get deadline => _deadline;
-  RecurrenceType? get recurrenceType => _recurrenceType;
   String? get titleError => _showValidationErrors ? _titleError : null;
   bool get isValid => _title.trim().isNotEmpty;
 
@@ -69,12 +66,6 @@ class AddQuestViewModel extends ChangeNotifier {
   /// Update deadline
   void updateDeadline(DateTime? value) {
     _deadline = value;
-    notifyListeners();
-  }
-
-  /// Update recurrence
-  void updateRecurrence(RecurrenceType? value) {
-    _recurrenceType = value;
     notifyListeners();
   }
 
@@ -136,10 +127,6 @@ class AddQuestViewModel extends ChangeNotifier {
         description: _description,
         deadline: _deadline,
         priority: _priority,
-        // If they pick a recurrence, we temporarily attach an ID so the TasksViewModel handles generating the RecurringQuest later
-        recurrenceId: _recurrenceType != null
-            ? '${_recurrenceType!.name}_recurring'
-            : null,
       );
       debugPrint(
         '✨ [AddQuestVM] New quest created: ${newQuest.id} - ${newQuest.title}',
@@ -154,7 +141,6 @@ class AddQuestViewModel extends ChangeNotifier {
     _description = null;
     _priority = QuestPriority.medium;
     _deadline = null;
-    _recurrenceType = null;
     _titleError = null;
     _showValidationErrors = false;
     notifyListeners();

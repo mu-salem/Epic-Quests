@@ -3,12 +3,10 @@ import 'package:flutter/foundation.dart';
 import '../../../core/resources/app_images.dart';
 import '../../../core/services/audio_service.dart';
 import '../../../core/services/quest_cleanup_service.dart';
-import '../../../core/services/recurring_quest_service.dart';
 import '../data/repositories/hero_profile_repository.dart';
 import '../data/repositories/sync_hero_profile_repository.dart';
 import '../model/hero_profile.dart';
 import '../model/quest.dart';
-import '../model/recurring_quest.dart';
 import '../data/repositories/quest_repository.dart';
 import '../data/repositories/sync_quest_repository.dart';
 
@@ -71,7 +69,6 @@ class TasksViewModel extends ChangeNotifier {
       '📊 [TasksVM] Current quests count: ${_heroProfile?.quests.length ?? 0}',
     );
     await _cleanupExpiredQuests();
-    await _generateRecurringQuests();
   }
 
   /// Get last selected hero name
@@ -121,25 +118,6 @@ class TasksViewModel extends ChangeNotifier {
       _invalidateCache();
       await _saveHeroProfile();
       notifyListeners();
-    }
-  }
-
-  /// Generate any due recurring quests for the current hero
-  Future<void> _generateRecurringQuests() async {
-    if (_heroProfile == null) return;
-    try {
-      final updated = await RecurringQuestService.checkAndGenerate(
-        _heroProfile!,
-        _questRepository,
-      );
-      if (updated.quests.length != _heroProfile!.quests.length) {
-        _heroProfile = updated;
-        _invalidateCache();
-        await _saveHeroProfile();
-        notifyListeners();
-      }
-    } catch (e) {
-      debugPrint('Recurring quest generation error: $e');
     }
   }
 
@@ -229,43 +207,6 @@ class TasksViewModel extends ChangeNotifier {
     }
 
     Quest finalQuest = quest;
-
-    // Check if we need to create a recurring quest based on a dummy recurrenceId generated in AddQuestViewModel
-    if (quest.recurrenceId != null &&
-        quest.recurrenceId!.endsWith('_recurring')) {
-      final typeString = quest.recurrenceId!.replaceAll('_recurring', '');
-
-      final recurrenceType = RecurrenceType.values.firstWhere(
-        (t) => t.name == typeString,
-        orElse: () => RecurrenceType.daily,
-      );
-
-      final recurringQuestId =
-          'req_${DateTime.now().millisecondsSinceEpoch.toString()}';
-
-      final recurringQuest = RecurringQuest(
-        id: recurringQuestId,
-        title: quest.title,
-        description: quest.description,
-        priority: quest.priority.name,
-        recurrenceType: recurrenceType,
-        nextDueAt: recurrenceType == RecurrenceType.daily
-            ? DateTime.now().add(const Duration(days: 1))
-            : recurrenceType == RecurrenceType.weekly
-            ? DateTime.now().add(const Duration(days: 7))
-            : DateTime.now().add(const Duration(days: 30)),
-        heroId: _heroProfile!.id,
-      );
-
-      final updatedRecurring = [
-        recurringQuest,
-        ..._heroProfile!.recurringQuests,
-      ];
-      _heroProfile = _heroProfile!.copyWith(recurringQuests: updatedRecurring);
-
-      // Update the base quest to hold the real recurring ID
-      finalQuest = quest.copyWith(recurrenceId: recurringQuestId);
-    }
 
     debugPrint('✅ [TasksVM] Adding quest to local state optimistically...');
 

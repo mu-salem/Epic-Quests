@@ -7,7 +7,6 @@ class HiveBoxes {
   static const String pendingActions = 'pending_actions';
   static const String avatars = 'avatars';
   static const String cache = 'cache';
-  static const String recurringQuests = 'recurring_quests';
   static const String pomodoroSessions = 'pomodoro_sessions';
 
   static List<String> get allBoxes => [
@@ -16,7 +15,6 @@ class HiveBoxes {
     pendingActions,
     avatars,
     cache,
-    recurringQuests,
     pomodoroSessions,
   ];
 }

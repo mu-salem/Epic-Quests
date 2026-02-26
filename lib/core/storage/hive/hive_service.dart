@@ -2,7 +2,6 @@ import 'package:hive_flutter/hive_flutter.dart';
 import '../../models/pending_action.dart';
 import '../../../features/tasks/model/hero_profile.dart';
 import '../../../features/tasks/model/quest.dart';
-import '../../../features/tasks/model/recurring_quest.dart';
 import '../../../features/pomodoro/model/pomodoro_session.dart';
 import 'hive_boxes.dart';
 
@@ -30,12 +29,6 @@ class HiveService {
     if (!Hive.isAdapterRegistered(3)) {
       Hive.registerAdapter(PendingActionAdapter());
     }
-    if (!Hive.isAdapterRegistered(5)) {
-      Hive.registerAdapter(RecurrenceTypeAdapter());
-    }
-    if (!Hive.isAdapterRegistered(6)) {
-      Hive.registerAdapter(RecurringQuestAdapter());
-    }
     if (!Hive.isAdapterRegistered(7)) {
       Hive.registerAdapter(PomodoroSessionAdapter());
     }
@@ -61,9 +54,6 @@ class HiveService {
     }
     if (!Hive.isBoxOpen(HiveBoxes.cache)) {
       await Hive.openBox(HiveBoxes.cache);
-    }
-    if (!Hive.isBoxOpen(HiveBoxes.recurringQuests)) {
-      await Hive.openBox<RecurringQuest>(HiveBoxes.recurringQuests);
     }
     if (!Hive.isBoxOpen(HiveBoxes.pomodoroSessions)) {
       await Hive.openBox<PomodoroSession>(HiveBoxes.pomodoroSessions);

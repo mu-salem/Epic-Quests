@@ -47,10 +47,6 @@ class ApiEndpoints {
   static String uncompleteQuest(String questId) =>
       '/quests/$questId/uncomplete';
 
-  // Recurring Quest Endpoints
-  static const String recurringQuests = '/recurring-quests';
-  static String recurringQuest(String id) => '/recurring-quests/$id';
-
   // Quest filtering
   static const String getActiveQuests = '/quests?status=active';
   static const String getCompletedQuests = '/quests?status=completed';

@@ -12,9 +12,6 @@ import 'core/services/sync_service.dart';
 import 'core/theme/app_theme.dart';
 import 'features/tasks/data/repositories/sync_hero_profile_repository.dart';
 import 'features/tasks/viewmodel/tasks_viewmodel.dart';
-import 'features/recurring/data/remote/api_recurring_quest_repository.dart';
-import 'features/recurring/data/repository/sync_recurring_quest_repository.dart';
-import 'features/recurring/viewmodel/recurring_viewmodel.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -53,14 +50,6 @@ void main() async {
         Provider.value(value: heroRepository),
         // TasksViewModel at root scope - survives navigation
         ChangeNotifierProvider(create: (_) => TasksViewModel()),
-        // Recurring quests
-        ChangeNotifierProvider(
-          create: (_) => RecurringViewModel(
-            repository: SyncRecurringQuestRepository(
-              ApiRecurringQuestRepository(apiClient: ApiClient()),
-            ),
-          ),
-        ),
       ],
       child: const EpicQuestsApp(),
     ),

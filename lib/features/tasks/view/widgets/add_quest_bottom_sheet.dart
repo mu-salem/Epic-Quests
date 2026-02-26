@@ -238,13 +238,6 @@ class _AddQuestBottomSheetState extends State<AddQuestBottomSheet> {
                               onTap: _selectDeadline,
                             ),
                             HeightSpacer(16),
-
-                            // Recurrence Picker
-                            QuestRecurrencePicker(
-                              selectedType: viewModel.recurrenceType,
-                              onTypeChanged: viewModel.updateRecurrence,
-                            ),
-                            HeightSpacer(24),
                           ],
                         ),
                       ),

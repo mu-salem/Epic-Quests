@@ -29,14 +29,13 @@ class HeroProfileAdapter extends TypeAdapter<HeroProfile> {
       totalCompletedQuests: fields[9] as int,
       createdAt: fields[10] as DateTime?,
       lastActivityDate: fields[11] as DateTime?,
-      recurringQuests: (fields[12] as List).cast<RecurringQuest>(),
     );
   }
 
   @override
   void write(BinaryWriter writer, HeroProfile obj) {
     writer
-      ..writeByte(13)
+      ..writeByte(12)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
@@ -60,9 +59,7 @@ class HeroProfileAdapter extends TypeAdapter<HeroProfile> {
       ..writeByte(10)
       ..write(obj.createdAt)
       ..writeByte(11)
-      ..write(obj.lastActivityDate)
-      ..writeByte(12)
-      ..write(obj.recurringQuests);
+      ..write(obj.lastActivityDate);
   }
 
   @override

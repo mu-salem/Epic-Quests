@@ -28,9 +28,6 @@ class Quest {
   @HiveField(7)
   final DateTime createdAt;
 
-  @HiveField(8)
-  final String? recurrenceId; // Link to RecurringQuest if applicable
-
   @HiveField(9)
   final int pomodorosCompleted;
 
@@ -43,7 +40,6 @@ class Quest {
     this.isCompleted = false,
     this.completedAt,
     DateTime? createdAt,
-    this.recurrenceId,
     this.pomodorosCompleted = 0,
   }) : createdAt = createdAt ?? DateTime.now();
 
@@ -65,8 +61,6 @@ class Quest {
     return completedAt!.difference(createdAt);
   }
 
-  bool get isRecurring => recurrenceId != null;
-
   Quest copyWith({
     String? id,
     String? title,
@@ -76,7 +70,6 @@ class Quest {
     bool? isCompleted,
     DateTime? completedAt,
     DateTime? createdAt,
-    String? recurrenceId,
     int? pomodorosCompleted,
   }) {
     return Quest(
@@ -88,7 +81,6 @@ class Quest {
       isCompleted: isCompleted ?? this.isCompleted,
       completedAt: completedAt ?? this.completedAt,
       createdAt: createdAt ?? this.createdAt,
-      recurrenceId: recurrenceId ?? this.recurrenceId,
       pomodorosCompleted: pomodorosCompleted ?? this.pomodorosCompleted,
     );
   }
@@ -103,7 +95,6 @@ class Quest {
       'is_completed': isCompleted,
       'completed_at': completedAt?.toIso8601String(),
       'created_at': createdAt.toIso8601String(),
-      'recurrence_id': recurrenceId,
       'pomodoros_completed': pomodorosCompleted,
     };
   }
@@ -156,7 +147,6 @@ class Quest {
       createdAt: (json['createdAt'] ?? json['created_at']) != null
           ? DateTime.parse((json['createdAt'] ?? json['created_at']) as String)
           : DateTime.now(),
-      recurrenceId: json['recurrence_id'] as String?,
       pomodorosCompleted: (json['pomodoros_completed'] as int?) ?? 0,
     );
   }
